@@ -77,7 +77,10 @@ class HP_dataset(Dataset):
 
         for idx, id_frm in enumerate(frame_index_array):
             #TODO: below reading specif frame from the video(video(id_frm)), and resize it to (3,180, 220)(using pytorch or pytorch probably)
-            tensor[idx,3,:,:] = cv2.resize(video_frames(id_frm),(3,180,220))# check if need 3 or juct 180,220
+            resizearr = np.resize(video_frames(id_frm), (3, 180, 220))
+            tensor[idx] = torch.from_numpy(resizearr)
+
+            #tensor[idx,3,:,:] = cv2.resize(video_frames(id_frm),(3,180,220))# check if need 3 or juct 180,220
 
 
         # maybe we needd to change to hotencoder
