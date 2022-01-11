@@ -105,8 +105,8 @@ if __name__ == '__main__':
                 if torch.argmax(output) == label:
                     accurcy = accurcy + 1
         print(f"accuracy={int((accurcy / len(test_loader))*100)}")
-        net.train()
+        net.train() #its only tells the model we are now training, so he knows to act differently where it needs
     torch.save(net.state_dict(), f'{filename}.pth')
     print("model saved, TODO: add currect calculation for result\n")
-    calc_acc(filename, isBi)
-    calc_confusion_matrix(filename, isBi)
+    #calc_acc(filename, isBi) #need  to fix inside the function, check borak if need, or there islibrary func to it
+    #calc_confusion_matrix(filename, isBi) #need  to fix inside the function, check borak if need, or there islibrary func to it

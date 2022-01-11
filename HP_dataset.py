@@ -22,13 +22,13 @@ for id, frm in enumerate(data):
     tensor[id, :] = torch.Tensor(frm)
 """
 class HP_dataset(Dataset):
-    def __init__(self, train_json_path, classes_path,seq_size=30, resize_image=(180,220)):
-        #self.HP_action_txt_paths = glob.glob(os.path.join(train_json_path, '*', '*.txt'))
-        self.HP_action_txt_paths = glob.glob(os.path.join(train_json_path, '*', '*.mp4'))
+    def __init__(self, train_videos_path, classes_path,seq_size=30, resize_image=(180,220)):
+        #self.train_videos_paths = glob.glob(os.path.join(train_videos_path, '*', '*.txt'))
+        self.train_videos_paths = glob.glob(os.path.join(train_videos_path, '*', '*.mp4'))
         #self.hand_points = hand_points
         self.seq_size = seq_size
         self.resize_image= resize_image
-        random.shuffle(self.HP_action_txt_paths)
+        random.shuffle(self.train_videos_paths)
 
         with open(classes_path, "r") as read_file:
             self.class_num = json.load(read_file)# check if this is the way to read the classes numbers
@@ -38,41 +38,61 @@ class HP_dataset(Dataset):
         # getitem is used let's use with array calls
 
     def __getitem__(self, index):
-        label = None
-        json_path = self.HP_action_txt_paths[index]
+        #label = None
+        video_path = self.train_videos_paths[index]
         # TODO: below reading video
-        with open(json_path, "r") as read_file: # need to change to reading a video, probably using opev cv videoCapture
-            data = json.load(read_file)
+        # with open(video_path, "r") as read_file: # need to change to reading a video, probably using opev cv videoCapture
+        #    data = json.load(read_file)
 
         #tensor = torch.zeros((len(data), 1, self.hand_points))
         tensor = torch.zeros(self.seq, 3, self.resize_image[0], self.resize_image[1])
         #for id, frm in enumerate(data):
         #    tensor[id,3,:, :] = torch.Tensor(frm)
-        #our reading
-        jumping_frames = data.size/ self.seq_size # need to take frame after this number of times
+
+        # extracting the video frames
+        video_frames = []
+        cap = cv2.VideoCapture(video_path)
+        while (cap.isOpened()):
+            ret, frame = cap.read()
+            if ret == True:
+                video_frames.append(frame)
+            else:
+                print("frame didnt extracted well or finished if shows uup try to delete this printing\n")
+                break
+        cap.release()
+
+        cv2.destroyAllWindows()
+
+        # extracting keeping
+
+        #keeping the indexes of frames we want to take
+        jumping_frames = len(video_frames)/ self.seq_size # need to take frame after this number of times
         frame_index_array=[]
-        for i in range(0, data.size): # data size is the video size, check if start from 0 or 1 and end with size or size+1
+        for i in range(0, len(video_frames)): # data size is the video size, check if start from 0 or 1 and end with size or size+1
             #need to add index of frame  that devide with out reminder in self.seq_size from the specific video
             if(i%jumping_frames==0):
                 frame_index_array.append(i)
 
+
+
         for idx, id_frm in enumerate(frame_index_array):
             #TODO: below reading specif frame from the video(video(id_frm)), and resize it to (3,180, 220)(using pytorch or pytorch probably)
-            tensor[idx,3,:,:] = resize(video(id_frm))# 3,180, 220 - resize using pytorch to this size
+            tensor[idx,3,:,:] = cv2.resize(video_frames(id_frm),(3,180,220))# check if need 3 or juct 180,220
 
 
         # maybe we needd to change to hotencoder
         # label = torch.zeros(1, len(self.class_num.keys()), dtype=torch.long)
-        # label[0, self.class_num[os.path.dirname(json_path).split('/')[-1]]] = 1
-        label = self.class_num[os.path.dirname(json_path).split('\\')[-1]]
-        # label = self.class_num[os.path.dirname(json_path).split('/')[-1]]
+        # label[0, self.class_num[os.path.dirname(video_path).split('/')[-1]]] = 1
+        #reading jenre name and take it value- aka its label number
+        label = self.class_num[os.path.dirname(video_path).split('\\')[-1]]
+        # label = self.class_num[os.path.dirname(video_path).split('/')[-1]]
         label = torch.tensor(label)
         label = label.long()
 
         return tensor, label
 
     def __len__(self):  # return count of sample we have
-        return len(self.HP_action_txt_paths)
+        return len(self.train_videos_paths)
 
 
 # todo: example of old main, maybe useful
