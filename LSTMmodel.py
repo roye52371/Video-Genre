@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import time
 import os
 import copy
-from torchviz import make_dot
+#from torchviz import make_dot
 import torch.nn.functional as F
 
 print("PyTorch Version: ", torch.__version__)
@@ -230,11 +230,16 @@ if __name__ == '__main__':
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     net = net.to(device)
     x = torch.rand(batch_size, seq, 3, 180, 220)# 3 is rgb, (180,220) specific frame size
-    for tensor, lbl in datasets:
-        tensor = tensor.to(device)
-        y = net(tensor)
-        print(y)
 
+    #for tensor, lbl in datasets:
+
+    #tensor = tensor.to(device)
+    x = x.to(device)
+    y = net(x)
+    print(y)
+
+    """
     dot = make_dot(y)
     dot.format = 'pdf'
     dot.render()
+    """

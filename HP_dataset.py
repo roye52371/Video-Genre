@@ -49,23 +49,41 @@ class HP_dataset(Dataset):
         #for id, frm in enumerate(data):
         #    tensor[id,3,:, :] = torch.Tensor(frm)
 
+
+
         # extracting the video frames
         video_frames = []
         cap = cv2.VideoCapture(video_path)
-        while (cap.isOpened()):
-            ret, frame = cap.read()
-            if ret == True:
-                video_frames.append(frame)
-            else:
-                print("frame didnt extracted well or finished if shows uup try to delete this printing\n")
-                break
+        if(cap.isOpened()):
+
+            numberofframes = cap.get(cv2.CAP_PROP_FRAME_COUNT)  # frames size in video
+
+            jumping_frames = np.floor(numberofframes / self.seq_size)  # need to take frame after this number of times
+            frame_index_array = []
+            for i in range(0, self.seq_size):  # data size is the video size, check if start from 0 or 1 and end with size or size+1
+                # need to add index of frame  that devide with out reminder in self.seq_size from the specific video
+                cap.set(cv2.CAP_PROP_POS_FRAMES,i*jumping_frames)
+                ret, frame = cap.read()
+                if ret == True:
+                    resizearr = np.resize(frame, (3, 180, 220))
+                    tensor[i] = torch.from_numpy(resizearr)
+                else:
+                    print("frame didnt extracted well or finished if shows uup try to delete this printing\n")
+                    break
+
+        else:
+            print("cap could not open\n")
+            exit()
         cap.release()
 
-        cv2.destroyAllWindows()
+
+
+
 
         # extracting keeping
 
         #keeping the indexes of frames we want to take
+        """
         jumping_frames = len(video_frames)/ self.seq_size # need to take frame after this number of times
         frame_index_array=[]
         for i in range(0, len(video_frames)): # data size is the video size, check if start from 0 or 1 and end with size or size+1
@@ -73,7 +91,7 @@ class HP_dataset(Dataset):
             if(i%jumping_frames==0):
                 frame_index_array.append(i)
 
-
+        """
 
         for idx, id_frm in enumerate(frame_index_array):
             #TODO: below reading specif frame from the video(video(id_frm)), and resize it to (3,180, 220)(using pytorch or pytorch probably)

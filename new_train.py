@@ -50,9 +50,9 @@ if __name__ == '__main__':
             split(ratio / 100)
             filename = f'weights_{ratio}{100 - ratio}_{isBi}'
             """
-    isBi = True
+    isBi = True # need to run one with tru and one with false
     ####### LSTM Params #########
-    output_size = 15
+    output_size = 16
     # input of lstm
     #latent_dim = hand_points
     latent_dim = 512# roye and dekel latent dim according to borak
@@ -81,18 +81,23 @@ if __name__ == '__main__':
             hp_data = hp_data.to(device)
             label = label.to(device)
             output = net(hp_data)
-            loss_out = loss_out + loss(output, label)
+            #loss_out = loss_out + loss(output, label)
+            loss_out =loss(output, label)
+            loss_out.backward()
+            optimizer.step()
+            optimizer.zero_grad()
 
-            if data_cnt % batch_size == 0 and data_cnt != 0:
-                # print('Progress =',data_cnt//batch_size,'/',len(train_loader)//batch_size)
-                # loss_out.backward: calculates the back-propagation algorithm
-                loss_out.backward()
-                # optimizes the model params
-                optimizer.step()
-                optimizer.zero_grad()
-                loss_out = 0
 
-            data_cnt = data_cnt + 1
+            # if data_cnt % batch_size == 0 and data_cnt != 0:
+            #     # print('Progress =',data_cnt//batch_size,'/',len(train_loader)//batch_size)
+            #     # loss_out.backward: calculates the back-propagation algorithm
+            #     loss_out.backward()
+            #     # optimizes the model params
+            #     optimizer.step()
+            #     optimizer.zero_grad()
+            #     loss_out = 0
+            #
+            # data_cnt = data_cnt + 1
 
         ####### Test model over valdiation test / test set
         accurcy = 0
