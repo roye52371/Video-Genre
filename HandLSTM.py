@@ -9,7 +9,7 @@ from torchvision import datasets, models, transforms
 import time
 import os
 import copy
-from torchviz import make_dot
+#from torchviz import make_dot
 import torch.nn.functional as F
 
 

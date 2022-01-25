@@ -45,7 +45,7 @@ class HP_dataset(Dataset):
         #    data = json.load(read_file)
 
         #tensor = torch.zeros((len(data), 1, self.hand_points))
-        tensor = torch.zeros(self.seq, 3, self.resize_image[0], self.resize_image[1])
+        tensor = torch.zeros(self.seq_size, 3, self.resize_image[0], self.resize_image[1])
         #for id, frm in enumerate(data):
         #    tensor[id,3,:, :] = torch.Tensor(frm)
 

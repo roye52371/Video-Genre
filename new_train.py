@@ -4,7 +4,8 @@ import numpy as np
 from torch.utils.data import DataLoader
 from HP_dataset import HP_dataset
 import torch
-from HandLSTM import LSTMmodel
+#from HandLSTM import LSTMmodel
+from  LSTMmodel import LSTMmodel
 import torch.optim as optim
 import torch.nn as nn
 import os
@@ -80,6 +81,7 @@ if __name__ == '__main__':
 
             hp_data = hp_data.to(device)
             label = label.to(device)
+            print(hp_data.shape)
             output = net(hp_data)
             #loss_out = loss_out + loss(output, label)
             loss_out =loss(output, label)
