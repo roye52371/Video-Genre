@@ -105,7 +105,7 @@ class HP_dataset(Dataset):
         # label = torch.zeros(1, len(self.class_num.keys()), dtype=torch.long)
         # label[0, self.class_num[os.path.dirname(video_path).split('/')[-1]]] = 1
         #reading jenre name and take it value- aka its label number
-        print(os.path.dirname(video_path).split('\\')[-1])
+        #print(os.path.dirname(video_path).split('\\')[-1])
         label = self.class_num[os.path.dirname(video_path).split('\\')[-1]]
         # label = self.class_num[os.path.dirname(video_path).split('/')[-1]]
         label = torch.tensor(label)

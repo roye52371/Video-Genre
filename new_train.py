@@ -81,7 +81,7 @@ if __name__ == '__main__':
 
             hp_data = hp_data.to(device)
             label = label.to(device)
-            print(hp_data.shape)
+            #print(hp_data.shape)
             output = net(hp_data)
             #loss_out = loss_out + loss(output, label)
             loss_out =loss(output, label)
