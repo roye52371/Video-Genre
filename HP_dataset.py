@@ -106,7 +106,14 @@ class HP_dataset(Dataset):
         # label[0, self.class_num[os.path.dirname(video_path).split('/')[-1]]] = 1
         #reading jenre name and take it value- aka its label number
         #print(os.path.dirname(video_path).split('\\')[-1])
-        label = self.class_num[os.path.dirname(video_path).split('\\')[-1]]
+        path = os.path.normpath(video_path)
+        b = path.split(os.sep)
+
+        # a= os.path.dirname(video_path).split('\\')[-1]
+        # print(a)
+        # b[len(b)-2] is the jenre I think
+        label = self.class_num[b[len(b) - 2]]
+        #label = self.class_num[os.path.dirname(video_path).split('\\')[-1]]
         # label = self.class_num[os.path.dirname(video_path).split('/')[-1]]
         label = torch.tensor(label)
         label = label.long()
