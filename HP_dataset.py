@@ -1,5 +1,5 @@
 from torchvision import transforms
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, DataLoader
 import torch
 from PIL import Image
 import os
@@ -25,6 +25,8 @@ class HP_dataset(Dataset):
     def __init__(self, train_videos_path, classes_path,seq_size=30, resize_image=(180,220)):
         #self.train_videos_paths = glob.glob(os.path.join(train_videos_path, '*', '*.txt'))
         self.train_videos_paths = glob.glob(os.path.join(train_videos_path, '*', '*.mp4'))
+        #self.train_videos_paths = self.train_videos_paths[0:20] # delete this line
+        #the line above is only for checking small number of data to check faster a full run
         #self.hand_points = hand_points
         self.seq_size = seq_size
         self.resize_image= resize_image
@@ -58,11 +60,14 @@ class HP_dataset(Dataset):
 
             numberofframes = cap.get(cv2.CAP_PROP_FRAME_COUNT)  # frames size in video
 
-            jumping_frames = np.floor(numberofframes / self.seq_size)  # need to take frame after this number of times
+            jumping_frames = int(np.floor(numberofframes / self.seq_size) ) # need to take frame after this number of times
             frame_index_array = []
             for i in range(0, self.seq_size):  # data size is the video size, check if start from 0 or 1 and end with size or size+1
                 # need to add index of frame  that devide with out reminder in self.seq_size from the specific video
-                cap.set(cv2.CAP_PROP_POS_FRAMES,i*jumping_frames)
+                #cap.set(cv2.CAP_PROP_POS_FRAMES,i*jumping_frames)
+                #changed to dumpy run over jumping frames, to prevent error accurs using cap.set in for loop
+                for j in range(0,jumping_frames-1):
+                    ret, frame = cap.read()
                 ret, frame = cap.read()
                 if ret == True:
                     resizearr = np.resize(frame, (3, 180, 220))
@@ -167,13 +172,37 @@ def prepor_json():
     print(class_dict)
     with open(os.path.join('EL', 'classes.txt'), "w") as write_file:
         json.dump(class_dict, write_file)
+
 # if __name__ == '__main__':
+#      filename = 'Dataset70_30'  # OR "Dataset70_30"( to run second time with 'Dataset80_20')
 #
-#     #### THIS APPLIED ONCE !!!!!
-#     # prepor_json()
-#     #################################
 #
-#     train_path = os.path.join('EL/train')
-#     train_dataset = DataLoader(train_path,'EL/classes.txt')
-#     for i in train_dataset:
-#      print(i[0].size(),i[1])
+#      print("cuda:0" if torch.cuda.is_available() else "cpu")
+#      device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+#
+#      # hand_points = 42 * 3
+#
+#      seq = 30  # num of frames to take from one video
+#      train_path = os.path.join(filename, 'train')
+#      train_dataset = HP_dataset(train_path, os.path.join(filename, 'classes.txt'), seq,
+#                                 (180, 220))  # (180,220) is frame size for all frames
+#
+#      batch_size = 1
+#      train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers=0)
+#
+#      for hp_data, label in train_loader:
+#          hp_data = hp_data.to(device)
+#          label = label.to(device)
+#          print(hp_data.shape)
+#          print(label)
+#          break
+#
+#
+# #     #### THIS APPLIED ONCE !!!!!
+# #     # prepor_json()
+# #     #################################
+# #
+# #     train_path = os.path.join('EL/train')
+# #     train_dataset = DataLoader(train_path,'EL/classes.txt')
+# #     for i in train_dataset:
+# #      print(i[0].size(),i[1])
