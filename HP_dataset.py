@@ -25,7 +25,7 @@ class HP_dataset(Dataset):
     def __init__(self, train_videos_path, classes_path,seq_size=30, resize_image=(180,220)):
         #self.train_videos_paths = glob.glob(os.path.join(train_videos_path, '*', '*.txt'))
         self.train_videos_paths = glob.glob(os.path.join(train_videos_path, '*', '*.mp4'))
-        #self.train_videos_paths = self.train_videos_paths[0:20] # delete this line
+        #self.train_videos_paths = self.train_videos_paths[0:14] # delete this line
         #the line above is only for checking small number of data to check faster a full run
         #self.hand_points = hand_points
         self.seq_size = seq_size
@@ -73,11 +73,13 @@ class HP_dataset(Dataset):
                     resizearr = np.resize(frame, (3, 180, 220))
                     tensor[i] = torch.from_numpy(resizearr)
                 else:
-                    print("frame didnt extracted well or finished if shows uup try to delete this printing\n")
+                    print("frame didnt extracted well or finished if shows uup try to delete this printing, in video:\n")
+                    print(video_path)
                     break
 
         else:
-            print("cap could not open\n")
+            print("cap could not open - in video:\n")
+            print(video_path)
             exit()
         cap.release()
 
@@ -96,13 +98,13 @@ class HP_dataset(Dataset):
             if(i%jumping_frames==0):
                 frame_index_array.append(i)
 
-        """
+        
 
         for idx, id_frm in enumerate(frame_index_array):
             #TODO: below reading specif frame from the video(video(id_frm)), and resize it to (3,180, 220)(using pytorch or pytorch probably)
             resizearr = np.resize(video_frames(id_frm), (3, 180, 220))
             tensor[idx] = torch.from_numpy(resizearr)
-
+        """
             #tensor[idx,3,:,:] = cv2.resize(video_frames(id_frm),(3,180,220))# check if need 3 or juct 180,220
 
 

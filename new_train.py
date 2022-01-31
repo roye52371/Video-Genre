@@ -74,10 +74,16 @@ if __name__ == '__main__':
     epochs = 35
     for ep in range(epochs):
         print(f'epoch {ep + 1:< 4}', end='')
+        print("\n")
         total_loss = 0
         data_cnt = 0
         loss_out = 0
+        #train_data_counter =0
+        print("start train\n")
         for hp_data, label in train_loader:
+            #train_data_counter=train_data_counter+1
+            #print(train_data_counter)
+
 
             hp_data = hp_data.to(device)
             label = label.to(device)
@@ -105,7 +111,11 @@ if __name__ == '__main__':
         accurcy = 0
         with torch.no_grad():
             net.eval()
+            #test_data_counter = 0
+            print("start test\n")
             for hp_data, label in test_loader:
+                #test_data_counter=test_data_counter+1
+                #print(test_data_counter)
                 hp_data = hp_data.to(device)
                 label = label.to(device)
                 output = net(hp_data)
