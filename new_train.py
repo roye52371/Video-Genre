@@ -16,7 +16,7 @@ from colorama import init
 from colorama import Fore, Back, Style
 
 filename = 'Dataset70_30' # OR "Dataset70_30"( to run second time with 'Dataset80_20')
-
+model_type = "CNN+LSTM"
 
 init()
 
@@ -25,14 +25,15 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 #hand_points = 42 * 3
 
+#seq should be according to frames created per video in offline proccesing in convertedVideosToFrames.ipynb
 seq=30#num of frames to take from one video
-train_path = os.path.join(filename, 'train')
+train_path = os.path.join(filename, 'train_frames')
 train_dataset = HP_dataset(train_path, os.path.join(filename, 'classes.txt'),seq,(180,220) )# (180,220) is frame size for all frames
 
 batch_size = 1
 train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers=0)
 
-test_path = os.path.join(filename, 'test')
+test_path = os.path.join(filename, 'test_frames')
 test_dataset = HP_dataset(test_path, os.path.join(filename, 'classes.txt'), seq,(180,220))
 test_loader = DataLoader(test_dataset, batch_size=1, shuffle=True, num_workers=0)
 
@@ -71,6 +72,7 @@ if __name__ == '__main__':
     loss = nn.NLLLoss()
 
     # epochs and training
+    our_accuracy=0
     epochs = 35
     for ep in range(epochs):
         print(f'epoch {ep + 1:< 4}', end='')
@@ -79,7 +81,7 @@ if __name__ == '__main__':
         data_cnt = 0
         loss_out = 0
         #train_data_counter =0
-        print("start train\n")
+        #print("start train\n")
         for hp_data, label in train_loader:
             #train_data_counter=train_data_counter+1
             #print(train_data_counter)
@@ -112,7 +114,7 @@ if __name__ == '__main__':
         with torch.no_grad():
             net.eval()
             #test_data_counter = 0
-            print("start test\n")
+            #print("start test\n")
             for hp_data, label in test_loader:
                 #test_data_counter=test_data_counter+1
                 #print(test_data_counter)
@@ -122,7 +124,10 @@ if __name__ == '__main__':
                 if torch.argmax(output) == label:
                     accurcy = accurcy + 1
         print(f"accuracy={int((accurcy / len(test_loader))*100)}")
+        our_accuracy = int((accurcy / len(test_loader)) * 100)
         net.train() #its only tells the model we are now training, so he knows to act differently where it needs
+    accurcy = int((accurcy / len(test_loader))*100)
+    filename = model_type+"_"+filename +"_isBi:_"+str(isBi)+"_accuracy: "+str(our_accuracy)
     torch.save(net.state_dict(), f'{filename}.pth')
     print("model saved, TODO: add currect calculation for result\n")
     #calc_acc(filename, isBi) #need  to fix inside the function, check borak if need, or there islibrary func to it

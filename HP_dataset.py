@@ -24,11 +24,12 @@ for id, frm in enumerate(data):
 class HP_dataset(Dataset):
     def __init__(self, train_videos_path, classes_path,seq_size=30, resize_image=(180,220)):
         #self.train_videos_paths = glob.glob(os.path.join(train_videos_path, '*', '*.txt'))
-        self.train_videos_paths = glob.glob(os.path.join(train_videos_path, '*', '*.mp4'))
+        self.train_videos_paths = glob.glob(os.path.join(train_videos_path, '*','*'))# keep all frame video folder paths
+
         #self.train_videos_paths = self.train_videos_paths[0:14] # delete this line
         #the line above is only for checking small number of data to check faster a full run
         #self.hand_points = hand_points
-        self.seq_size = seq_size
+        self.seq_size = seq_size #should be according to frames created per video in offline proccesing
         self.resize_image= resize_image
         random.shuffle(self.train_videos_paths)
 
@@ -41,7 +42,11 @@ class HP_dataset(Dataset):
 
     def __getitem__(self, index):
         #label = None
-        video_path = self.train_videos_paths[index]
+        #print(self.train_videos_paths)
+        folder_video_path = self.train_videos_paths[index]
+        frames_jenre = glob.glob(os.path.join(folder_video_path,'*.jpg'))
+        frames_jenre.sort()
+
         # TODO: below reading video
         # with open(video_path, "r") as read_file: # need to change to reading a video, probably using opev cv videoCapture
         #    data = json.load(read_file)
@@ -51,61 +56,65 @@ class HP_dataset(Dataset):
         #for id, frm in enumerate(data):
         #    tensor[id,3,:, :] = torch.Tensor(frm)
 
+        for i in range(0, self.seq_size):
+            frame = cv2.imread(frames_jenre[i])
+            resizearr = np.resize(frame, (3, 180, 220))
+            tensor[i] = torch.from_numpy(resizearr)
 
 
-        # extracting the video frames
-        video_frames = []
-        cap = cv2.VideoCapture(video_path)
-        if(cap.isOpened()):
-
-            numberofframes = cap.get(cv2.CAP_PROP_FRAME_COUNT)  # frames size in video
-
-            jumping_frames = int(np.floor(numberofframes / self.seq_size) ) # need to take frame after this number of times
-            frame_index_array = []
-            for i in range(0, self.seq_size):  # data size is the video size, check if start from 0 or 1 and end with size or size+1
-                # need to add index of frame  that devide with out reminder in self.seq_size from the specific video
-                #cap.set(cv2.CAP_PROP_POS_FRAMES,i*jumping_frames)
-                #changed to dumpy run over jumping frames, to prevent error accurs using cap.set in for loop
-                for j in range(0,jumping_frames-1):
-                    ret, frame = cap.read()
-                ret, frame = cap.read()
-                if ret == True:
-                    resizearr = np.resize(frame, (3, 180, 220))
-                    tensor[i] = torch.from_numpy(resizearr)
-                else:
-                    print("frame didnt extracted well or finished if shows uup try to delete this printing, in video:\n")
-                    print(video_path)
-                    break
-
-        else:
-            print("cap could not open - in video:\n")
-            print(video_path)
-            exit()
-        cap.release()
-
-
-
-
-
-        # extracting keeping
-
-        #keeping the indexes of frames we want to take
-        """
-        jumping_frames = len(video_frames)/ self.seq_size # need to take frame after this number of times
-        frame_index_array=[]
-        for i in range(0, len(video_frames)): # data size is the video size, check if start from 0 or 1 and end with size or size+1
-            #need to add index of frame  that devide with out reminder in self.seq_size from the specific video
-            if(i%jumping_frames==0):
-                frame_index_array.append(i)
-
-        
-
-        for idx, id_frm in enumerate(frame_index_array):
-            #TODO: below reading specif frame from the video(video(id_frm)), and resize it to (3,180, 220)(using pytorch or pytorch probably)
-            resizearr = np.resize(video_frames(id_frm), (3, 180, 220))
-            tensor[idx] = torch.from_numpy(resizearr)
-        """
-            #tensor[idx,3,:,:] = cv2.resize(video_frames(id_frm),(3,180,220))# check if need 3 or juct 180,220
+        # # extracting the video frames
+        # video_frames = []
+        # cap = cv2.VideoCapture(video_path)
+        # if(cap.isOpened()):
+        #
+        #     numberofframes = cap.get(cv2.CAP_PROP_FRAME_COUNT)  # frames size in video
+        #
+        #     jumping_frames = int(np.floor(numberofframes / self.seq_size) ) # need to take frame after this number of times
+        #     frame_index_array = []
+        #     for i in range(0, self.seq_size):  # data size is the video size, check if start from 0 or 1 and end with size or size+1
+        #         # need to add index of frame  that devide with out reminder in self.seq_size from the specific video
+        #         #cap.set(cv2.CAP_PROP_POS_FRAMES,i*jumping_frames)
+        #         #changed to dumpy run over jumping frames, to prevent error accurs using cap.set in for loop
+        #         for j in range(0,jumping_frames-1):
+        #             ret, frame = cap.read()
+        #         ret, frame = cap.read()
+        #         if ret == True:
+        #             resizearr = np.resize(frame, (3, 180, 220))
+        #             tensor[i] = torch.from_numpy(resizearr)
+        #         else:
+        #             print("frame didnt extracted well or finished if shows uup try to delete this printing, in video:\n")
+        #             print(video_path)
+        #             break
+        #
+        # else:
+        #     print("cap could not open - in video:\n")
+        #     print(video_path)
+        #     exit()
+        # cap.release()
+        #
+        #
+        #
+        #
+        #
+        # # extracting keeping
+        #
+        # #keeping the indexes of frames we want to take
+        # """
+        # jumping_frames = len(video_frames)/ self.seq_size # need to take frame after this number of times
+        # frame_index_array=[]
+        # for i in range(0, len(video_frames)): # data size is the video size, check if start from 0 or 1 and end with size or size+1
+        #     #need to add index of frame  that devide with out reminder in self.seq_size from the specific video
+        #     if(i%jumping_frames==0):
+        #         frame_index_array.append(i)
+        #
+        #
+        #
+        # for idx, id_frm in enumerate(frame_index_array):
+        #     #TODO: below reading specif frame from the video(video(id_frm)), and resize it to (3,180, 220)(using pytorch or pytorch probably)
+        #     resizearr = np.resize(video_frames(id_frm), (3, 180, 220))
+        #     tensor[idx] = torch.from_numpy(resizearr)
+        # """
+        #     #tensor[idx,3,:,:] = cv2.resize(video_frames(id_frm),(3,180,220))# check if need 3 or juct 180,220
 
 
         # maybe we needd to change to hotencoder
@@ -113,13 +122,14 @@ class HP_dataset(Dataset):
         # label[0, self.class_num[os.path.dirname(video_path).split('/')[-1]]] = 1
         #reading jenre name and take it value- aka its label number
         #print(os.path.dirname(video_path).split('\\')[-1])
-        path = os.path.normpath(video_path)
+        path = os.path.normpath(folder_video_path)
         b = path.split(os.sep)
-
+        #print(b)
+        #print(b[len(b) - 2])
         # a= os.path.dirname(video_path).split('\\')[-1]
         # print(a)
         # b[len(b)-2] is the jenre I think
-        label = self.class_num[b[len(b) - 2]]
+        label = self.class_num[b[len(b) - 2]] #to check
         #label = self.class_num[os.path.dirname(video_path).split('\\')[-1]]
         # label = self.class_num[os.path.dirname(video_path).split('/')[-1]]
         label = torch.tensor(label)
@@ -131,49 +141,49 @@ class HP_dataset(Dataset):
         return len(self.train_videos_paths)
 
 
-# todo: example of old main, maybe useful
-def prepor_json():
-    import json
-
-    # Opening JSON file
-    f = open('extracted_landmarks_test.json')
-
-    # returns JSON object as
-    # a dictionary
-    dataset_ = 'EL/test'
-    data = json.load(f)
-    width = 1980
-    height = 1080
-
-    class_dict = {}
-    for ky_num, ky in enumerate(data.keys()):
-        class_dict[ky] = ky_num
-
-        for ex_n, example in enumerate(data[ky]):
-
-            file_name_path = os.path.join(dataset_, ky, str(ex_n) + '.txt')
-            os.makedirs(os.path.join(dataset_, ky), exist_ok=True)
-            with open(file_name_path, "w") as write_file:
-
-                dict_data = {}
-                for n_frme, frme_hp in enumerate(example):
-                    # print('n_frme=',n_frme)
-                    vector_hp_One_Frame = frme_hp
-                    normlized = []
-                    for idx, el in enumerate(vector_hp_One_Frame):
-                        if idx % 2 == 0:
-                            normlized.append(vector_hp_One_Frame[idx] / width)
-                        else:
-                            normlized.append(vector_hp_One_Frame[idx] / height)
-
-                    dict_data[n_frme] = normlized
-                json.dump(dict_data, write_file)
-
-        # Closing file
-        f.close()
-    print(class_dict)
-    with open(os.path.join('EL', 'classes.txt'), "w") as write_file:
-        json.dump(class_dict, write_file)
+# # todo: example of old main, maybe useful
+# def prepor_json():
+#     import json
+#
+#     # Opening JSON file
+#     f = open('extracted_landmarks_test.json')
+#
+#     # returns JSON object as
+#     # a dictionary
+#     dataset_ = 'EL/test'
+#     data = json.load(f)
+#     width = 1980
+#     height = 1080
+#
+#     class_dict = {}
+#     for ky_num, ky in enumerate(data.keys()):
+#         class_dict[ky] = ky_num
+#
+#         for ex_n, example in enumerate(data[ky]):
+#
+#             file_name_path = os.path.join(dataset_, ky, str(ex_n) + '.txt')
+#             os.makedirs(os.path.join(dataset_, ky), exist_ok=True)
+#             with open(file_name_path, "w") as write_file:
+#
+#                 dict_data = {}
+#                 for n_frme, frme_hp in enumerate(example):
+#                     # print('n_frme=',n_frme)
+#                     vector_hp_One_Frame = frme_hp
+#                     normlized = []
+#                     for idx, el in enumerate(vector_hp_One_Frame):
+#                         if idx % 2 == 0:
+#                             normlized.append(vector_hp_One_Frame[idx] / width)
+#                         else:
+#                             normlized.append(vector_hp_One_Frame[idx] / height)
+#
+#                     dict_data[n_frme] = normlized
+#                 json.dump(dict_data, write_file)
+#
+#         # Closing file
+#         f.close()
+#     print(class_dict)
+#     with open(os.path.join('EL', 'classes.txt'), "w") as write_file:
+#         json.dump(class_dict, write_file)
 
 # if __name__ == '__main__':
 #      filename = 'Dataset70_30'  # OR "Dataset70_30"( to run second time with 'Dataset80_20')
@@ -185,7 +195,7 @@ def prepor_json():
 #      # hand_points = 42 * 3
 #
 #      seq = 30  # num of frames to take from one video
-#      train_path = os.path.join(filename, 'train')
+#      train_path = os.path.join(filename, 'train_frames')
 #      train_dataset = HP_dataset(train_path, os.path.join(filename, 'classes.txt'), seq,
 #                                 (180, 220))  # (180,220) is frame size for all frames
 #
@@ -199,6 +209,16 @@ def prepor_json():
 #          print(label)
 #          break
 #
+#      filename = 'Dataset70_30'  # OR "Dataset70_30"( to run second time with 'Dataset80_20')
+#      model_type = "CNN+LSTM"
+#      accurcy=4
+#      test_loader = [1,2]
+#      isBi=True
+#      our_accuracy=6
+#      accurcy = int((accurcy / len(test_loader)) * 100)
+#      filename = model_type + "_" + filename + "_isBi:_" + str(isBi) + "_accuracy: " + str(our_accuracy)
+#      print(filename)
+
 #
 # #     #### THIS APPLIED ONCE !!!!!
 # #     # prepor_json()
