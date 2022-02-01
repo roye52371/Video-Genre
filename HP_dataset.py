@@ -45,7 +45,9 @@ class HP_dataset(Dataset):
         #print(self.train_videos_paths)
         folder_video_path = self.train_videos_paths[index]
         frames_jenre = glob.glob(os.path.join(folder_video_path,'*.jpg'))
-        frames_jenre.sort()
+        #print(frames_jenre)
+        frames_jenre.sort(key=len)#to make sure frame_8 comes before framee 11 and etc
+        #print(frames_jenre)
 
         # TODO: below reading video
         # with open(video_path, "r") as read_file: # need to change to reading a video, probably using opev cv videoCapture
