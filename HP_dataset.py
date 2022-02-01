@@ -218,7 +218,7 @@ class HP_dataset(Dataset):
 #      isBi=True
 #      our_accuracy=6
 #      accurcy = int((accurcy / len(test_loader)) * 100)
-#      filename = model_type + "_" + filename + "_isBi:_" + str(isBi) + "_accuracy: " + str(our_accuracy)
+#      filename = model_type + "_" + filename + "_isBi:_" + str(isBi) + "_accuracy=" + str(our_accuracy)
 #      print(filename)
 
 #

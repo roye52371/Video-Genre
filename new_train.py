@@ -127,7 +127,7 @@ if __name__ == '__main__':
         our_accuracy = int((accurcy / len(test_loader)) * 100)
         net.train() #its only tells the model we are now training, so he knows to act differently where it needs
     accurcy = int((accurcy / len(test_loader))*100)
-    filename = model_type+"_"+filename +"_isBi:_"+str(isBi)+"_accuracy: "+str(our_accuracy)
+    filename = model_type+"_"+filename +"_isBi:_"+str(isBi)+"_accuracy="+str(our_accuracy)
     torch.save(net.state_dict(), f'{filename}.pth')
     print("model saved, TODO: add currect calculation for result\n")
     #calc_acc(filename, isBi) #need  to fix inside the function, check borak if need, or there islibrary func to it
