@@ -26,12 +26,12 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 #hand_points = 42 * 3
 
 #seq should be according to frames created per video in offline proccesing in convertedVideosToFrames.ipynb
-seq=30#num of frames to take from one video
+seq=120#num of frames to take from one video
 train_path = os.path.join(filename, 'train_frames')
 train_dataset = HP_dataset(train_path, os.path.join(filename, 'classes.txt'),seq,(180,220) )# (180,220) is frame size for all frames
 
-batch_size = 1
-train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers=0)
+#batch_size = 1
+train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=0)
 
 test_path = os.path.join(filename, 'test_frames')
 test_dataset = HP_dataset(test_path, os.path.join(filename, 'classes.txt'), seq,(180,220))
@@ -92,10 +92,16 @@ if __name__ == '__main__':
             #print(hp_data.shape)
             output = net(hp_data)
             #loss_out = loss_out + loss(output, label)
+            #print("loss begore change\n")
+            #print(loss_out)
             loss_out =loss(output, label)
+            #print("loss after change\n")
+            #print(loss_out)
             loss_out.backward()
             optimizer.step()
             optimizer.zero_grad()
+            #print("loss after optimizer calc\n")
+            #print(loss_out)
 
 
             # if data_cnt % batch_size == 0 and data_cnt != 0:
@@ -110,6 +116,8 @@ if __name__ == '__main__':
             # data_cnt = data_cnt + 1
 
         ####### Test model over valdiation test / test set
+        print("loss current training epoch\n")
+        print(loss_out)
         accurcy = 0
         with torch.no_grad():
             net.eval()

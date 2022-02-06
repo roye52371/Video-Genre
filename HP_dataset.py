@@ -22,11 +22,11 @@ for id, frm in enumerate(data):
     tensor[id, :] = torch.Tensor(frm)
 """
 class HP_dataset(Dataset):
-    def __init__(self, train_videos_path, classes_path,seq_size=30, resize_image=(180,220)):
+    def __init__(self, train_videos_path, classes_path,seq_size, resize_image=(180,220)):
         #self.train_videos_paths = glob.glob(os.path.join(train_videos_path, '*', '*.txt'))
         self.train_videos_paths = glob.glob(os.path.join(train_videos_path, '*','*'))# keep all frame video folder paths
 
-        #self.train_videos_paths = self.train_videos_paths[0:14] # delete this line
+        #self.train_videos_paths = self.train_videos_paths[0:20] # delete this line
         #the line above is only for checking small number of data to check faster a full run
         #self.hand_points = hand_points
         self.seq_size = seq_size #should be according to frames created per video in offline proccesing
