@@ -196,13 +196,13 @@ class HP_dataset(Dataset):
 #
 #      # hand_points = 42 * 3
 #
-#      seq = 30  # num of frames to take from one video
-#      train_path = os.path.join(filename, 'train_frames')
+#      seq = 120  # num of frames to take from one video
+#      train_path = os.path.join(filename, 'train_frames_120')
 #      train_dataset = HP_dataset(train_path, os.path.join(filename, 'classes.txt'), seq,
 #                                 (180, 220))  # (180,220) is frame size for all frames
 #
-#      batch_size = 1
-#      train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True, num_workers=0)
+#      #batch_size = 1
+#      train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=0)
 #
 #      for hp_data, label in train_loader:
 #          hp_data = hp_data.to(device)
