@@ -30,7 +30,7 @@ seq=120#num of frames to take from one video
 train_path = os.path.join(filename, 'train_frames_120perInterval')
 train_dataset = HP_dataset(train_path, os.path.join(filename, 'classes.txt'),seq,(180,220) )# (180,220) is frame size for all frames
 
-train_batch_size = 1
+train_batch_size = 8 # if not work decrease to 4
 #train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=0)
 train_loader = DataLoader(train_dataset, batch_size=train_batch_size, shuffle=True, num_workers=0)
 
