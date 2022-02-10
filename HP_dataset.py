@@ -24,7 +24,7 @@ for id, frm in enumerate(data):
 class HP_dataset(Dataset):
     def __init__(self, train_videos_path, classes_path,seq_size, resize_image=(180,220)):
         #self.train_videos_paths = glob.glob(os.path.join(train_videos_path, '*', '*.txt'))
-        self.train_videos_paths = glob.glob(os.path.join(train_videos_path, '*','*'))# keep all frame video folder paths
+        self.train_videos_paths = glob.glob(os.path.join(train_videos_path, '*','*','*'))# keep all frame video folder intervals paths
 
         #self.train_videos_paths = self.train_videos_paths[0:20] # delete this line
         #the line above is only for checking small number of data to check faster a full run
@@ -45,6 +45,7 @@ class HP_dataset(Dataset):
         #print(self.train_videos_paths)
         folder_video_path = self.train_videos_paths[index]
         frames_jenre = glob.glob(os.path.join(folder_video_path,'*.jpg'))
+        #print(folder_video_path)
         #print(frames_jenre)
         frames_jenre.sort(key=len)#to make sure frame_8 comes before framee 11 and etc
         #print(frames_jenre)
@@ -63,75 +64,15 @@ class HP_dataset(Dataset):
             resizearr = np.resize(frame, (3, 180, 220))
             tensor[i] = torch.from_numpy(resizearr)
 
-
-        # # extracting the video frames
-        # video_frames = []
-        # cap = cv2.VideoCapture(video_path)
-        # if(cap.isOpened()):
-        #
-        #     numberofframes = cap.get(cv2.CAP_PROP_FRAME_COUNT)  # frames size in video
-        #
-        #     jumping_frames = int(np.floor(numberofframes / self.seq_size) ) # need to take frame after this number of times
-        #     frame_index_array = []
-        #     for i in range(0, self.seq_size):  # data size is the video size, check if start from 0 or 1 and end with size or size+1
-        #         # need to add index of frame  that devide with out reminder in self.seq_size from the specific video
-        #         #cap.set(cv2.CAP_PROP_POS_FRAMES,i*jumping_frames)
-        #         #changed to dumpy run over jumping frames, to prevent error accurs using cap.set in for loop
-        #         for j in range(0,jumping_frames-1):
-        #             ret, frame = cap.read()
-        #         ret, frame = cap.read()
-        #         if ret == True:
-        #             resizearr = np.resize(frame, (3, 180, 220))
-        #             tensor[i] = torch.from_numpy(resizearr)
-        #         else:
-        #             print("frame didnt extracted well or finished if shows uup try to delete this printing, in video:\n")
-        #             print(video_path)
-        #             break
-        #
-        # else:
-        #     print("cap could not open - in video:\n")
-        #     print(video_path)
-        #     exit()
-        # cap.release()
-        #
-        #
-        #
-        #
-        #
-        # # extracting keeping
-        #
-        # #keeping the indexes of frames we want to take
-        # """
-        # jumping_frames = len(video_frames)/ self.seq_size # need to take frame after this number of times
-        # frame_index_array=[]
-        # for i in range(0, len(video_frames)): # data size is the video size, check if start from 0 or 1 and end with size or size+1
-        #     #need to add index of frame  that devide with out reminder in self.seq_size from the specific video
-        #     if(i%jumping_frames==0):
-        #         frame_index_array.append(i)
-        #
-        #
-        #
-        # for idx, id_frm in enumerate(frame_index_array):
-        #     #TODO: below reading specif frame from the video(video(id_frm)), and resize it to (3,180, 220)(using pytorch or pytorch probably)
-        #     resizearr = np.resize(video_frames(id_frm), (3, 180, 220))
-        #     tensor[idx] = torch.from_numpy(resizearr)
-        # """
-        #     #tensor[idx,3,:,:] = cv2.resize(video_frames(id_frm),(3,180,220))# check if need 3 or juct 180,220
+        tensor = tensor/255;# normalize tensor
 
 
-        # maybe we needd to change to hotencoder
-        # label = torch.zeros(1, len(self.class_num.keys()), dtype=torch.long)
-        # label[0, self.class_num[os.path.dirname(video_path).split('/')[-1]]] = 1
-        #reading jenre name and take it value- aka its label number
-        #print(os.path.dirname(video_path).split('\\')[-1])
         path = os.path.normpath(folder_video_path)
         b = path.split(os.sep)
         #print(b)
-        #print(b[len(b) - 2])
-        # a= os.path.dirname(video_path).split('\\')[-1]
-        # print(a)
-        # b[len(b)-2] is the jenre I think
-        label = self.class_num[b[len(b) - 2]] #to check
+
+        # b[len(b)-3] is the jenre I think
+        label = self.class_num[b[len(b) - 3]] #to check
         #label = self.class_num[os.path.dirname(video_path).split('\\')[-1]]
         # label = self.class_num[os.path.dirname(video_path).split('/')[-1]]
         label = torch.tensor(label)

@@ -27,32 +27,21 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 #seq should be according to frames created per video in offline proccesing in convertedVideosToFrames.ipynb
 seq=120#num of frames to take from one video
-train_path = os.path.join(filename, 'train_frames_120')
+train_path = os.path.join(filename, 'train_frames_120perInterval')
 train_dataset = HP_dataset(train_path, os.path.join(filename, 'classes.txt'),seq,(180,220) )# (180,220) is frame size for all frames
 
-#batch_size = 1
-train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=0)
+train_batch_size = 1
+#train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=0)
+train_loader = DataLoader(train_dataset, batch_size=train_batch_size, shuffle=True, num_workers=0)
 
-test_path = os.path.join(filename, 'test_frames_120')
+test_path = os.path.join(filename, 'test_frames_120perInterval')
 test_dataset = HP_dataset(test_path, os.path.join(filename, 'classes.txt'), seq,(180,220))
 test_loader = DataLoader(test_dataset, batch_size=1, shuffle=True, num_workers=0)
 
 if __name__ == '__main__':
-    """
-    for isBi in [False, True]:
-        for ratio in [60, 90, 70, 80]:
-            if (not isBi and ratio != 90) or (isBi and ratio == 60):
-                continue
-            
-            print(Back.RED, '=============')
-            print(Style.RESET_ALL, end='')
-            print(Fore.YELLOW, f'ratio: {ratio}, isBi: {isBi}')
-            print(Back.RED, '=============')
-            print(Style.RESET_ALL)
-            split(ratio / 100)
-            filename = f'weights_{ratio}{100 - ratio}_{isBi}'
-            """
-    isBi = True # need to run one with tru and one with false
+
+    #isBi = True # need to run one with tru and one with false
+    isBi = True
     ####### LSTM Params #########
     output_size = 16
     # input of lstm
@@ -62,7 +51,8 @@ if __name__ == '__main__':
     hidden_dim = 256
     # how many frames to look back (check it)
     #n_layers = 2
-    n_layers = 1 # roye and dekel num of lstm layers according to borak
+    #n_layers = 1 # roye and dekel num of lstm layers according to borak
+    n_layers=1
     net = LSTMmodel(output_size, latent_dim, hidden_dim, n_layers, model_name='Basic', isBi=isBi)
     # use the available device in the model
     net = net.to(device)
@@ -81,7 +71,7 @@ if __name__ == '__main__':
         data_cnt = 0
         loss_out = 0
         #train_data_counter =0
-        #print("start train\n")
+        print("start train\n")
         for hp_data, label in train_loader:
             #train_data_counter=train_data_counter+1
             #print(train_data_counter)
@@ -122,7 +112,7 @@ if __name__ == '__main__':
         with torch.no_grad():
             net.eval()
             #test_data_counter = 0
-            #print("start test\n")
+            print("start test\n")
             for hp_data, label in test_loader:
                 #test_data_counter=test_data_counter+1
                 #print(test_data_counter)
@@ -131,10 +121,11 @@ if __name__ == '__main__':
                 output = net(hp_data)
                 if torch.argmax(output) == label:
                     accurcy = accurcy + 1
-        print(f"accuracy={int((accurcy / len(test_loader))*100)}")
-        our_accuracy = int((accurcy / len(test_loader)) * 100)
+
+        print(f"accuracy={((accurcy / len(test_loader))*100)}")
+        our_accuracy = ((accurcy / len(test_loader)) * 100)
         net.train() #its only tells the model we are now training, so he knows to act differently where it needs
-    our_accuracy = int((accurcy / len(test_loader))*100)
+    our_accuracy = ((accurcy / len(test_loader))*100)
     filename = model_type+"_"+filename +"_isBi:_"+str(isBi)+"_accuracy="+str(our_accuracy)
     torch.save(net.state_dict(), f'{filename}.pth')
     print("model saved, TODO: add currect calculation for result\n")
