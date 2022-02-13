@@ -79,9 +79,9 @@ for jenre in classes:
             #frameId = video.get(1)
             #success,image = video.read()        
             numberofframes = cap.get(cv2.CAP_PROP_FRAME_COUNT)  # frames size in video
-            print(jenre)
-            print(file)
-            print(numberofframes)
+            #print(jenre)
+            #print(file)
+            #print(numberofframes)
             jumping_frames = int(np.floor(numberofframes / seq_size) ) # need to take frame after this number of times
             #frame_index_array = []
             for i in range(0, seq_size):  # data size is the video size, check if start from 0 or 1 and end with size or size+1
