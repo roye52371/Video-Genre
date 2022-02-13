@@ -13,7 +13,7 @@ import shutil
 
 #if want to run different values, need to changed values in train part, and in test part afterwards!!!
 
-#train part----------------------------------------------------------------------------
+#train part
 
 filename = 'Dataset70_30' # OR "Dataset70_30"( to run second time with 'Dataset80_20')
 
@@ -21,11 +21,14 @@ dataset_path =filename +"/train" #dataset_path + train or test
 dataset_path_frames_dir = filename+"/train_frames_120perInterval"
 #above is path will be created for new train/test dataset of frames intervals
 #below is creating the above folder
-os.makedirs(dataset_path_frames_dir)
+os.makedirs(dataset_path_frames_dir,exist_ok = True)
 
 
 
-#classes = ["Animation", "Cooking and food recipes"]
+#classes = ["American Football"]
+
+
+
 classes = ["American Football", "Animation", "Baseball", "Basketball",
  "Cooking and food recipes", "Golf", "Graffiti Art", "Hair Style",
  "Ice Hockey", "Judo", "Soccer", "Speeches and Lectures-Talks",
@@ -49,7 +52,7 @@ num_of_Intervals_per_Video = 30
 for jenre in classes:
     dataset_path_frames_jenre_dir = dataset_path_frames_dir+"/"+jenre
 
-    os.makedirs(dataset_path_frames_jenre_dir)
+    os.makedirs(dataset_path_frames_jenre_dir,exist_ok = True)
 
     dataset_path_video_jenre = dataset_path+"/"+jenre
     #print(dataset_path)
@@ -70,13 +73,15 @@ for jenre in classes:
         #os.makedirs(dataset_path_frames_jenre_dir + "/video_" + str(int(count)))
         filenamenotype= Path(file).stem
         #print(filenamenotype)
-        os.makedirs(dataset_path_frames_jenre_dir + "/video_" + filenamenotype)
+        os.makedirs(dataset_path_frames_jenre_dir + "/video_" + filenamenotype, exist_ok = True)
         count = 0
         if (cap.isOpened()):
             #frameId = video.get(1)
             #success,image = video.read()        
             numberofframes = cap.get(cv2.CAP_PROP_FRAME_COUNT)  # frames size in video
-
+            print(jenre)
+            print(file)
+            print(numberofframes)
             jumping_frames = int(np.floor(numberofframes / seq_size) ) # need to take frame after this number of times
             #frame_index_array = []
             for i in range(0, seq_size):  # data size is the video size, check if start from 0 or 1 and end with size or size+1
@@ -107,7 +112,7 @@ for jenre in classes:
         i_video_path = dataset_path_frames_jenre_dir + "/video_" + filenamenotype
         for i in range(0, num_of_Intervals_per_Video): #create intervals folder to video_i in it
             curr_interval_folder= i_video_path+"/interval_"+str(i)
-            os.makedirs(curr_interval_folder)
+            os.makedirs(curr_interval_folder,exist_ok = True)
         #creating above all intervals folder in video_i
         
         for i in range(0, seq_size):
@@ -115,6 +120,9 @@ for jenre in classes:
             
             our_filename = dataset_path_frames_jenre_dir + "/video_" + filenamenotype + "/frame_" + str(int(i)) + ".jpg"
             curr_interval_folder= i_video_path+"/interval_"+str(interval_to_move_frames_to)
+            check_existance= i_video_path+"/interval_"+str(interval_to_move_frames_to)+ "/frame_" + str(int(i)) + ".jpg"
+            if os.path.exists(check_existance):
+               os.remove(check_existance)
             shutil.move(our_filename,curr_interval_folder)
         
         
@@ -124,13 +132,13 @@ for jenre in classes:
 # In[3]:
 
 
-#test part----------------------------------------------------------------------------
+#test part
 filename = 'Dataset70_30' # OR "Dataset70_30"( to run second time with 'Dataset80_20')
 dataset_path =filename +"/test"      # os.path.join(filename, 'train')
 dataset_path_frames_dir = filename+"/test_frames_120perInterval"
 
 
-os.makedirs(dataset_path_frames_dir)
+os.makedirs(dataset_path_frames_dir,exist_ok = True)
 
 
 # In[4]:
@@ -143,7 +151,7 @@ os.makedirs(dataset_path_frames_dir)
 for jenre in classes:
     dataset_path_frames_jenre_dir = dataset_path_frames_dir+"/"+jenre
 
-    os.makedirs(dataset_path_frames_jenre_dir)
+    os.makedirs(dataset_path_frames_jenre_dir, exist_ok = True)
 
     dataset_path_video_jenre = dataset_path+"/"+jenre
     #print(dataset_path)
@@ -164,7 +172,7 @@ for jenre in classes:
         #os.makedirs(dataset_path_frames_jenre_dir + "/video_" + str(int(count)))
         filenamenotype= Path(file).stem
         #print(filenamenotype)
-        os.makedirs(dataset_path_frames_jenre_dir + "/video_" + filenamenotype)
+        os.makedirs(dataset_path_frames_jenre_dir + "/video_" + filenamenotype, exist_ok = True)
         count = 0
         if (cap.isOpened()):
             #frameId = video.get(1)
@@ -201,7 +209,7 @@ for jenre in classes:
         i_video_path = dataset_path_frames_jenre_dir + "/video_" + filenamenotype
         for i in range(0, num_of_Intervals_per_Video): #create intervals folder to video_i in it
             curr_interval_folder= i_video_path+"/interval_"+str(i)
-            os.makedirs(curr_interval_folder)
+            os.makedirs(curr_interval_folder, exist_ok = True)
         #creating above all intervals folder in video_i
         
         for i in range(0, seq_size):
@@ -209,6 +217,9 @@ for jenre in classes:
             
             our_filename = dataset_path_frames_jenre_dir + "/video_" + filenamenotype + "/frame_" + str(int(i)) + ".jpg"
             curr_interval_folder= i_video_path+"/interval_"+str(interval_to_move_frames_to)
+            check_existance= i_video_path+"/interval_"+str(interval_to_move_frames_to)+ "/frame_" + str(int(i)) + ".jpg"
+            if os.path.exists(check_existance):
+               os.remove(check_existance)
             shutil.move(our_filename,curr_interval_folder)
         
         
