@@ -35,11 +35,16 @@ classes = ["American Football", "Animation", "Baseball", "Basketball",
  "Swimming(in Pool)", "Tennis", "Underwater-Ocean life",
  "Volleyball"]
 
-seq_size = 3600
+seq_size = 2040
+
+#seq_size = 3600
 
 num_of_frames_per_intervals = 120
 
-num_of_Intervals_per_Video = 30
+num_of_Intervals_per_Video = 17 #2040 / 120 =17
+
+
+#num_of_Intervals_per_Video = 30
 
 
 # In[2]:
