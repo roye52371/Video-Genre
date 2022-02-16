@@ -22,16 +22,19 @@ for id, frm in enumerate(data):
     tensor[id, :] = torch.Tensor(frm)
 """
 class HP_dataset(Dataset):
-    def __init__(self, train_videos_path, classes_path,seq_size, resize_image=(180,220)):
-        #self.train_videos_paths = glob.glob(os.path.join(train_videos_path, '*', '*.txt'))
-        self.train_videos_paths = glob.glob(os.path.join(train_videos_path, '*','*','*'))# keep all frame video folder intervals paths
-
-        #self.train_videos_paths = self.train_videos_paths[0:20] # delete this line
+    def __init__(self, train_videos_path, classes_path,seq_size, videos_path, resize_image=(180,220)):
+        #self.train_videos_paths_txt = glob.glob(os.path.join(train_videos_path, '*', '*.txt'))
+        self.train_videos_paths_txt = glob.glob(os.path.join(train_videos_path, '*','*','*'))# keep all frame video folder intervals paths
+        #print(self.train_videos_paths_txt)
+        #self.train_videos_paths_tzt = self.train_videos_paths_txt[0:20] # delete this line
         #the line above is only for checking small number of data to check faster a full run
         #self.hand_points = hand_points
+        #print(videos_path)
+        self.videos_path = videos_path
+        #print(self.videos_path)
         self.seq_size = seq_size #should be according to frames created per video in offline proccesing
         self.resize_image= resize_image
-        random.shuffle(self.train_videos_paths)
+        random.shuffle(self.train_videos_paths_txt)
 
         with open(classes_path, "r") as read_file:
             self.class_num = json.load(read_file)# check if this is the way to read the classes numbers
@@ -41,13 +44,18 @@ class HP_dataset(Dataset):
         # getitem is used let's use with array calls
 
     def __getitem__(self, index):
-        #label = None
-        #print(self.train_videos_paths)
-        folder_video_path = self.train_videos_paths[index]
-        frames_jenre = glob.glob(os.path.join(folder_video_path,'*.jpg'))
+        #print(self.videos_path)
+
+        folder_video_path = self.train_videos_paths_txt[index]
+        #print(folder_video_path)
+        with open(folder_video_path,"r") as interval_frames:
+            frames_array_index= interval_frames.read().splitlines()
+        int_frames_array_index= [int(numeric_string) for numeric_string in frames_array_index]
+        #print(int_frames_array_index)
+        #frames_jenre = glob.glob(os.path.join(folder_video_path,'*.jpg'))
         #print(folder_video_path)
         #print(frames_jenre)
-        frames_jenre.sort(key=len)#to make sure frame_8 comes before framee 11 and etc
+        #frames_jenre.sort(key=len)#to make sure frame_8 comes before framee 11 and etc
         #print(frames_jenre)
 
         # TODO: below reading video
@@ -56,21 +64,57 @@ class HP_dataset(Dataset):
 
         #tensor = torch.zeros((len(data), 1, self.hand_points))
         tensor = torch.zeros(self.seq_size, 3, self.resize_image[0], self.resize_image[1])
+        path = os.path.normpath(folder_video_path)
+        b = path.split(os.sep)
+        curr_jenre = b[len(b) - 3]
+        video_number = b[len(b) - 2]
+        video_curr_path = self.videos_path+"/"+curr_jenre+"/"+video_number+".mp4"
+        #print(video_curr_path)
         #for id, frm in enumerate(data):
         #    tensor[id,3,:, :] = torch.Tensor(frm)
 
-        for i in range(0, self.seq_size):
-            frame = cv2.imread(frames_jenre[i])
-            resizearr = np.resize(frame, (3, 180, 220))
-            tensor[i] = torch.from_numpy(resizearr)
+        # video_frames = []
+        cap = cv2.VideoCapture(video_curr_path)
+        if(cap.isOpened()):
+
+            #     numberofframes = cap.get(cv2.CAP_PROP_FRAME_COUNT)  # frames size in video
+            #
+            #     jumping_frames = int(np.floor(numberofframes / self.seq_size) ) # need to take frame after this number of times
+            #     frame_index_array = []
+            for i in range(0, self.seq_size):  # data size is the video size, check if start from 0 or 1 and end with size or size+1
+                myFrameNumber = int_frames_array_index[i]
+                totalFrames = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+
+                # check for valid frame number
+                if myFrameNumber >= 0 & myFrameNumber <= totalFrames:
+                    # set frame position
+                    cap.set(cv2.CAP_PROP_POS_FRAMES, myFrameNumber)
+                    ret, frame = cap.read() # read the specific frame using setting its index in the video
+                    if ret == True:
+                        resizearr = np.resize(frame, (3, 180, 220))
+                        tensor[i] = torch.from_numpy(resizearr)
+                else:
+                    print("illegall frame index ask to be taken:\n")
+                    print("frame number: ")
+                    print(myFrameNumber)
+                    print("while video size is: ")
+                    print(totalFrames)
+                    exit()
+
+        else:
+            print("cap could not open - in video:\n")
+            print(video_curr_path)
+            exit()
+        cap.release()
+
 
         tensor = tensor/255;# normalize tensor
+        #print(tensor.size())
 
-
-        path = os.path.normpath(folder_video_path)
-        b = path.split(os.sep)
+        #path = os.path.normpath(folder_video_path)
+        #b = path.split(os.sep)
         #print(b)
-
+        #print(b[len(b)-3])
         # b[len(b)-3] is the jenre I think
         label = self.class_num[b[len(b) - 3]] #to check
         #label = self.class_num[os.path.dirname(video_path).split('\\')[-1]]
@@ -81,7 +125,7 @@ class HP_dataset(Dataset):
         return tensor, label
 
     def __len__(self):  # return count of sample we have
-        return len(self.train_videos_paths)
+        return len(self.train_videos_paths_txt)
 
 
 # # todo: example of old main, maybe useful
@@ -130,7 +174,7 @@ class HP_dataset(Dataset):
 
 # if __name__ == '__main__':
 #      filename = 'Dataset70_30'  # OR "Dataset70_30"( to run second time with 'Dataset80_20')
-#
+#      train_path_videos = filename + "/train"
 #
 #      print("cuda:0" if torch.cuda.is_available() else "cpu")
 #      device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -138,8 +182,8 @@ class HP_dataset(Dataset):
 #      # hand_points = 42 * 3
 #
 #      seq = 120  # num of frames to take from one video
-#      train_path = os.path.join(filename, 'train_frames_120')
-#      train_dataset = HP_dataset(train_path, os.path.join(filename, 'classes.txt'), seq,
+#      train_path = os.path.join(filename, 'train_frames_120perIntervalastxt')
+#      train_dataset = HP_dataset(train_path, os.path.join(filename, 'classes.txt'), seq, train_path_videos,
 #                                 (180, 220))  # (180,220) is frame size for all frames
 #
 #      #batch_size = 1

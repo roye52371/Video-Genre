@@ -63,8 +63,8 @@ for jenre in classes:
     #print(listing)
     #seq_size = 120
     for file in listing:
-        print(jenre)
-        print(file)
+        #print(jenre)
+        #print(file)
         #filenameeee= Path(file).stem
         #print(filenameeee)
         our_video = dataset_path_video_jenre +"/"+file
@@ -75,10 +75,12 @@ for jenre in classes:
         #os.makedirs(dataset_path_frames_jenre_dir + "/video_" + str(int(count)))
         filenamenotype= Path(file).stem
         #print(filenamenotype)
-        os.makedirs(dataset_path_frames_jenre_dir + "/video_" + filenamenotype, exist_ok = True)
+        #os.makedirs(dataset_path_frames_jenre_dir + "/video_" + filenamenotype, exist_ok = True)
+        os.makedirs(dataset_path_frames_jenre_dir + "/" + filenamenotype, exist_ok=True)
         count = 0
         #create txt intervalfile
-        i_video_path = dataset_path_frames_jenre_dir + "/video_" + filenamenotype
+        #i_video_path = dataset_path_frames_jenre_dir + "/video_" + filenamenotype
+        i_video_path = dataset_path_frames_jenre_dir + "/" + filenamenotype
         for i in range(0, num_of_Intervals_per_Video): #create intervals folder to video_i in it
             curr_interval_folder= i_video_path+"/interval_"+str(i)+".txt"
             #os.makedirs(curr_interval_folder,exist_ok = True)
@@ -103,11 +105,11 @@ for jenre in classes:
             numberofframes = cap.get(cv2.CAP_PROP_FRAME_COUNT)  # frames size in video
             #print(jenre)
             #print(file)
-            print("num of frames: ")
-            print(numberofframes)
+            #print("num of frames: ")
+            #print(numberofframes)
             jumping_frames = int(np.floor(numberofframes / seq_size) ) # need to take frame after this number of times
-            print("jumping number: ")
-            print(jumping_frames)
+            #print("jumping number: ")
+            #print(jumping_frames)
             frame_index_array = []
             for i in range(0, seq_size):  # data size is the video size, check if start from 0 or 1 and end with size or size+1
                 #numofframe= (i*(jumping_frames+1))#cause we need to jump over jumping frames
@@ -206,8 +208,8 @@ for jenre in classes:
     #print(listing)
     #seq_size = 120
     for file in listing:
-        print(jenre)
-        print(file)
+        #print(jenre)
+        #print(file)
         #filenameeee= Path(file).stem
         #print(filenameeee)
         our_video = dataset_path_video_jenre +"/"+file
@@ -218,10 +220,12 @@ for jenre in classes:
         #os.makedirs(dataset_path_frames_jenre_dir + "/video_" + str(int(count)))
         filenamenotype= Path(file).stem
         #print(filenamenotype)
-        os.makedirs(dataset_path_frames_jenre_dir + "/video_" + filenamenotype, exist_ok = True)
+        #os.makedirs(dataset_path_frames_jenre_dir + "/video_" + filenamenotype, exist_ok = True)
+        os.makedirs(dataset_path_frames_jenre_dir + "/" + filenamenotype, exist_ok=True)
         count = 0
         #create txt intervalfile
-        i_video_path = dataset_path_frames_jenre_dir + "/video_" + filenamenotype
+        #i_video_path = dataset_path_frames_jenre_dir + "/video_" + filenamenotype
+        i_video_path = dataset_path_frames_jenre_dir + "/" + filenamenotype
         for i in range(0, num_of_Intervals_per_Video): #create intervals folder to video_i in it
             curr_interval_folder= i_video_path+"/interval_"+str(i)+".txt"
             #os.makedirs(curr_interval_folder,exist_ok = True)
@@ -246,7 +250,7 @@ for jenre in classes:
             numberofframes = cap.get(cv2.CAP_PROP_FRAME_COUNT)  # frames size in video
             #print(jenre)
             #print(file)
-            print(numberofframes)
+            #print(numberofframes)
             jumping_frames = int(np.floor(numberofframes / seq_size) ) # need to take frame after this number of times
             frame_index_array = []
             for i in range(0, seq_size):  # data size is the video size, check if start from 0 or 1 and end with size or size+1
