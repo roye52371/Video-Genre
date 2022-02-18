@@ -74,6 +74,8 @@ class HP_dataset(Dataset):
         #    tensor[id,3,:, :] = torch.Tensor(frm)
 
         # video_frames = []
+        int_frames_array_index.sort() # just for make sure the numers aree from small to big, if didnot take like that  from txt
+        #print(int_frames_array_index)#check if sorted
         cap = cv2.VideoCapture(video_curr_path)
         if(cap.isOpened()):
 
@@ -81,18 +83,34 @@ class HP_dataset(Dataset):
             #
             #     jumping_frames = int(np.floor(numberofframes / self.seq_size) ) # need to take frame after this number of times
             #     frame_index_array = []
+            totalFrames = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+            count=0
             for i in range(0, self.seq_size):  # data size is the video size, check if start from 0 or 1 and end with size or size+1
                 myFrameNumber = int_frames_array_index[i]
-                totalFrames = cap.get(cv2.CAP_PROP_FRAME_COUNT)
+
 
                 # check for valid frame number
                 if myFrameNumber >= 0 & myFrameNumber <= totalFrames:
                     # set frame position
-                    cap.set(cv2.CAP_PROP_POS_FRAMES, myFrameNumber)
-                    ret, frame = cap.read() # read the specific frame using setting its index in the video
+                    #cap.set(cv2.CAP_PROP_POS_FRAMES, myFrameNumber)
+                    while count!=myFrameNumber:
+                        ret, frame = cap.read() # read the specific frame using setting its index in the video
+                        count = count+1
+                    #reading the accuratte frame, now count == myFrameNumber
+                    ret, frame = cap.read()  # read the specific frame using setting its index in the video
+                    count = count + 1 # finish reading now update to next one to try to read
+                    #check if the frame was re
                     if ret == True:
                         resizearr = np.resize(frame, (3, 180, 220))
                         tensor[i] = torch.from_numpy(resizearr)
+
+                    else:
+                        print("problem reading frame in position: ")
+                        print(myFrameNumber) #because counter updated before this printing to be myFrameNumber+1, so does not print here count
+                        print("in the video: ")
+                        print(video_curr_path)
+                        exit()
+
                 else:
                     print("illegall frame index ask to be taken:\n")
                     print("frame number: ")
@@ -172,29 +190,29 @@ class HP_dataset(Dataset):
 #     with open(os.path.join('EL', 'classes.txt'), "w") as write_file:
 #         json.dump(class_dict, write_file)
 
-# if __name__ == '__main__':
-#      filename = 'Dataset70_30'  # OR "Dataset70_30"( to run second time with 'Dataset80_20')
-#      train_path_videos = filename + "/train"
-#
-#      print("cuda:0" if torch.cuda.is_available() else "cpu")
-#      device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-#
-#      # hand_points = 42 * 3
-#
-#      seq = 120  # num of frames to take from one video
-#      train_path = os.path.join(filename, 'train_frames_120perIntervalastxt')
-#      train_dataset = HP_dataset(train_path, os.path.join(filename, 'classes.txt'), seq, train_path_videos,
-#                                 (180, 220))  # (180,220) is frame size for all frames
-#
-#      #batch_size = 1
-#      train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=0)
-#
-#      for hp_data, label in train_loader:
-#          hp_data = hp_data.to(device)
-#          label = label.to(device)
-#          print(hp_data.shape)
-#          print(label)
-#          break
+if __name__ == '__main__':
+     filename = 'Dataset70_30'  # OR "Dataset70_30"( to run second time with 'Dataset80_20')
+     train_path_videos = filename + "/train"
+
+     print("cuda:0" if torch.cuda.is_available() else "cpu")
+     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
+     # hand_points = 42 * 3
+
+     seq = 120  # num of frames to take from one video
+     train_path = os.path.join(filename, 'train_frames_120perIntervalastxt')
+     train_dataset = HP_dataset(train_path, os.path.join(filename, 'classes.txt'), seq, train_path_videos,
+                                (180, 220))  # (180,220) is frame size for all frames
+
+     #batch_size = 1
+     train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=0)
+
+     for hp_data, label in train_loader:
+         hp_data = hp_data.to(device)
+         label = label.to(device)
+         print(hp_data.shape)
+         print(label)
+         break
 #
 #      filename = 'Dataset70_30'  # OR "Dataset70_30"( to run second time with 'Dataset80_20')
 #      model_type = "CNN+LSTM"
