@@ -66,78 +66,82 @@ if __name__ == '__main__':
     loss = nn.NLLLoss()
 
     # epochs and training
-    our_accuracy=0
+    best_accuracy = 0
+    epoch_num_of_best_acc = 0
+    our_accuracy=0#current accuracy!!! may not the best one
     epochs = 35
-    with trange(epochs, unit="epoch",position=0) as tepoch:
-        tepoch.set_description('epoches Progress Bar')
-        for ep in tepoch:
-            with tqdm(train_loader, unit="batch",position=1) as train_epoch:
-                train_epoch.set_description(f"Train_Epoch {ep}")
-                #print(f'epoch {ep + 1:< 4}', end='')
-                #print("\n")
-                total_loss = 0
-                data_cnt = 0
-                loss_out = 0
-                #train_data_counter =0
-                #print("start train\n")
-                for hp_data, label in train_epoch:
-                    #train_data_counter=train_data_counter+1
-                    #print(train_data_counter)
+    tepoch= trange(epochs,desc='epoches Progress Bar', unit="epoch",position=0)
+    for ep in range(epochs):
+        with tqdm(train_loader, unit="batch",position=1,leave=False) as train_epoch:
+            train_epoch.set_description(f"Train_Epoch {ep+1}")#cause ep start from o and end in epoches-1
+            #print(f'epoch {ep + 1:< 4}', end='')
+            #print("\n")
+            total_loss = 0
+            data_cnt = 0
+            loss_out = 0
+            #train_data_counter =0
+            #print("start train\n")
+            for hp_data, label in train_epoch:
+                #train_data_counter=train_data_counter+1
+                #print(train_data_counter)
 
 
-                    hp_data = hp_data.to(device)
-                    label = label.to(device)
-                    #print(hp_data.shape)
-                    output = net(hp_data)
-                    #loss_out = loss_out + loss(output, label)
-                    #print("loss begore change\n")
-                    #print(loss_out)
-                    loss_out =loss(output, label)
-                    #print("loss after change\n")
-                    #print(loss_out)
-                    loss_out.backward()
-                    optimizer.step()
-                    optimizer.zero_grad()
-                    #print("loss after optimizer calc\n")
-                    #print(loss_out)
-
-
-                    # if data_cnt % batch_size == 0 and data_cnt != 0:
-                    #     # print('Progress =',data_cnt//batch_size,'/',len(train_loader)//batch_size)
-                    #     # loss_out.backward: calculates the back-propagation algorithm
-                    #     loss_out.backward()
-                    #     # optimizes the model params
-                    #     optimizer.step()
-                    #     optimizer.zero_grad()
-                    #     loss_out = 0
-                    #
-                    # data_cnt = data_cnt + 1
-
-                ####### Test model over valdiation test / test set
-                #print("loss current training epoch\n")
+                hp_data = hp_data.to(device)
+                label = label.to(device)
+                #print(hp_data.shape)
+                output = net(hp_data)
+                #loss_out = loss_out + loss(output, label)
+                #print("loss begore change\n")
                 #print(loss_out)
-                accurcy = 0
-                with torch.no_grad():
-                    net.eval()
-                    #test_data_counter = 0
-                    #print("start test\n")
-                    with tqdm(test_loader, unit="batch",leave=False,position=2) as test_epoch:
-                        test_epoch.set_description(f"Test_Epoch {ep}")
-                        for hp_data, label in test_epoch:
-                            #test_data_counter=test_data_counter+1
-                            #print(test_data_counter)
-                            hp_data = hp_data.to(device)
-                            label = label.to(device)
-                            output = net(hp_data)
-                            if torch.argmax(output) == label:
-                                accurcy = accurcy + 1
+                loss_out =loss(output, label)
+                #print("loss after change\n")
+                #print(loss_out)
+                loss_out.backward()
+                optimizer.step()
+                optimizer.zero_grad()
+                #print("loss after optimizer calc\n")
+                #print(loss_out)
 
-                    #print(f"accuracy={((accurcy / len(test_loader))*100)}")
-                    our_accuracy = ((accurcy / len(test_loader)) * 100)
-                    #add loss and accuracy to progress bar
-                    tepoch.set_postfix(curr_loss=loss_out.item(), curr_accuracy=((accurcy / len(test_loader)) * 100))
 
-                    net.train() #its only tells the model we are now training, so he knows to act differently where it needs
+                # if data_cnt % batch_size == 0 and data_cnt != 0:
+                #     # print('Progress =',data_cnt//batch_size,'/',len(train_loader)//batch_size)
+                #     # loss_out.backward: calculates the back-propagation algorithm
+                #     loss_out.backward()
+                #     # optimizes the model params
+                #     optimizer.step()
+                #     optimizer.zero_grad()
+                #     loss_out = 0
+                #
+                # data_cnt = data_cnt + 1
+
+            ####### Test model over valdiation test / test set
+            #print("loss current training epoch\n")
+            #print(loss_out)
+            accurcy = 0
+            with torch.no_grad():
+                net.eval()
+                #test_data_counter = 0
+                #print("start test\n")
+                with tqdm(test_loader, unit="batch",leave=False,position=2) as test_epoch:
+                    test_epoch.set_description(f"Test_Epoch {ep+1}")#cause ep start from o and end in epoches-1
+                    for hp_data, label in test_epoch:
+                        #test_data_counter=test_data_counter+1
+                        #print(test_data_counter)
+                        hp_data = hp_data.to(device)
+                        label = label.to(device)
+                        output = net(hp_data)
+                        if torch.argmax(output) == label:
+                            accurcy = accurcy + 1
+
+                #print(f"accuracy={((accurcy / len(test_loader))*100)}")
+                our_accuracy = ((accurcy / len(test_loader)) * 100)
+                if(our_accuracy>best_accuracy):
+                    best_accuracy=our_accuracy
+                    epoch_num_of_best_acc = ep+1 #cause ep start from o and end in epoches-1
+                #add loss and accuracy to progress bar
+                tepoch.set_postfix(curr_accuracy=((accurcy / len(test_loader)) * 100),curr_loss=loss_out.item(),theBest_acc=best_accuracy,theEpochNumof_best_acc=epoch_num_of_best_acc)
+                tepoch.update(1)
+                net.train() #its only tells the model we are now training, so he knows to act differently where it needs
     our_accuracy = ((accurcy / len(test_loader))*100)
     filename = model_type+"_"+filename +"_isBi:_"+str(isBi)+"_accuracy="+str(our_accuracy)
     torch.save(net.state_dict(), f'{filename}.pth')
