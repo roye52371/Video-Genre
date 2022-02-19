@@ -194,29 +194,29 @@ class HP_dataset(Dataset):
 #     with open(os.path.join('EL', 'classes.txt'), "w") as write_file:
 #         json.dump(class_dict, write_file)
 
-if __name__ == '__main__':
-     filename = 'Dataset70_30'  # OR "Dataset70_30"( to run second time with 'Dataset80_20')
-     train_path_videos = filename + "/train"
-
-     print("cuda:0" if torch.cuda.is_available() else "cpu")
-     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-     # hand_points = 42 * 3
-
-     seq = 120  # num of frames to take from one video
-     train_path = os.path.join(filename, 'train_frames_120perIntervalastxt')
-     train_dataset = HP_dataset(train_path, os.path.join(filename, 'classes.txt'), seq, train_path_videos,
-                                (180, 220))  # (180,220) is frame size for all frames
-
-     #batch_size = 1
-     train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=0)
-
-     for hp_data, label in tqdm(train_loader,desc = 'tqdm() Progress Bar'):
-         hp_data = hp_data.to(device)
-         label = label.to(device)
-         print(hp_data.shape)
-         print(label)
-         break
+# if __name__ == '__main__':
+#      filename = 'Dataset70_30'  # OR "Dataset70_30"( to run second time with 'Dataset80_20')
+#      train_path_videos = filename + "/train"
+#
+#      print("cuda:0" if torch.cuda.is_available() else "cpu")
+#      device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+#
+#      # hand_points = 42 * 3
+#
+#      seq = 120  # num of frames to take from one video
+#      train_path = os.path.join(filename, 'train_frames_120perIntervalastxt')
+#      train_dataset = HP_dataset(train_path, os.path.join(filename, 'classes.txt'), seq, train_path_videos,
+#                                 (180, 220))  # (180,220) is frame size for all frames
+#
+#      #batch_size = 1
+#      train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=0)
+#
+#      for hp_data, label in tqdm(train_loader,desc = 'tqdm() Progress Bar'):
+#          hp_data = hp_data.to(device)
+#          label = label.to(device)
+#          print(hp_data.shape)
+#          print(label)
+#          break
 #
 #      filename = 'Dataset70_30'  # OR "Dataset70_30"( to run second time with 'Dataset80_20')
 #      model_type = "CNN+LSTM"
