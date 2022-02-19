@@ -27,7 +27,7 @@ class HP_dataset(Dataset):
         #self.train_videos_paths_txt = glob.glob(os.path.join(train_videos_path, '*', '*.txt'))
         self.train_videos_paths_txt = glob.glob(os.path.join(train_videos_path, '*','*','*'))# keep all frame video folder intervals paths
         #print(self.train_videos_paths_txt)
-        self.train_videos_paths_txt = self.train_videos_paths_txt[0:8] # delete this line
+        #self.train_videos_paths_txt = self.train_videos_paths_txt[0:8] # delete this line
         #print(len(self.train_videos_paths_txt))
         #the line above is only for checking small number of data to check faster a full run
         #self.hand_points = hand_points
