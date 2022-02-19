@@ -253,8 +253,13 @@ for jenre in classes:
             #print(numberofframes)
             jumping_frames = int(np.floor(numberofframes / seq_size) ) # need to take frame after this number of times
             frame_index_array = []
+            numofframe=0
             for i in range(0, seq_size):  # data size is the video size, check if start from 0 or 1 and end with size or size+1
-                numofframe= (i*(jumping_frames+1))#cause we need to jump over jumping frames
+                if(i==0):
+                    numofframe =0
+                else:
+                    numofframe= numofframe+ jumping_frames#cause we need to jump over jumping frames
+                #add frame index to array
                 frame_index_array.append(numofframe)
             for i in range(0, seq_size):  # data size is the video size, check if start from 0 or 1 and end with size or size+1
                 interval_to_move_frames_to= i % num_of_Intervals_per_Video #modulo

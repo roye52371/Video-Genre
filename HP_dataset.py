@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import torchvision
 from functools import reduce
 import random
+from tqdm import tqdm
 
 # todo: create new HP_Dataset which contains: tensor = torch.zeros((len(data)=50(frames), self.hand_points=126)) as 2D tensor
 """
@@ -26,7 +27,8 @@ class HP_dataset(Dataset):
         #self.train_videos_paths_txt = glob.glob(os.path.join(train_videos_path, '*', '*.txt'))
         self.train_videos_paths_txt = glob.glob(os.path.join(train_videos_path, '*','*','*'))# keep all frame video folder intervals paths
         #print(self.train_videos_paths_txt)
-        #self.train_videos_paths_tzt = self.train_videos_paths_txt[0:20] # delete this line
+        self.train_videos_paths_txt = self.train_videos_paths_txt[0:8] # delete this line
+        #print(len(self.train_videos_paths_txt))
         #the line above is only for checking small number of data to check faster a full run
         #self.hand_points = hand_points
         #print(videos_path)
@@ -90,7 +92,7 @@ class HP_dataset(Dataset):
 
 
                 # check for valid frame number
-                if myFrameNumber >= 0 & myFrameNumber <= totalFrames:
+                if myFrameNumber >= 0 & myFrameNumber <= totalFrames-1:
                     # set frame position
                     #cap.set(cv2.CAP_PROP_POS_FRAMES, myFrameNumber)
                     while count!=myFrameNumber:
@@ -105,10 +107,12 @@ class HP_dataset(Dataset):
                         tensor[i] = torch.from_numpy(resizearr)
 
                     else:
-                        print("problem reading frame in position: ")
+                        print("problem reading frame in position(ret!=True): ")
                         print(myFrameNumber) #because counter updated before this printing to be myFrameNumber+1, so does not print here count
                         print("in the video: ")
-                        print(video_curr_path)
+                        print(folder_video_path)
+                        print("while video size is: ")
+                        print(totalFrames)
                         exit()
 
                 else:
@@ -121,7 +125,7 @@ class HP_dataset(Dataset):
 
         else:
             print("cap could not open - in video:\n")
-            print(video_curr_path)
+            print(folder_video_path)
             exit()
         cap.release()
 
@@ -207,7 +211,7 @@ if __name__ == '__main__':
      #batch_size = 1
      train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=0)
 
-     for hp_data, label in train_loader:
+     for hp_data, label in tqdm(train_loader,desc = 'tqdm() Progress Bar'):
          hp_data = hp_data.to(device)
          label = label.to(device)
          print(hp_data.shape)

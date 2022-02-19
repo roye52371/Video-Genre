@@ -14,6 +14,7 @@ from confusion_matrix import calc_confusion_matrix
 #from EL.split_train_test import split
 from colorama import init
 from colorama import Fore, Back, Style
+from tqdm import tqdm
 
 filename = 'Dataset70_30' # OR "Dataset70_30"( to run second time with 'Dataset80_20')
 model_type = "CNN+LSTM"
@@ -66,7 +67,7 @@ if __name__ == '__main__':
     # epochs and training
     our_accuracy=0
     epochs = 35
-    for ep in range(epochs):
+    for ep in tqdm(range(epochs),desc = 'epoches() Progress Bar'):
         print(f'epoch {ep + 1:< 4}', end='')
         print("\n")
         total_loss = 0
