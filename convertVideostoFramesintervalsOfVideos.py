@@ -28,14 +28,14 @@ dataset_path_frames_dir = filename+"/train_frames_120perIntervalsOfVideo"
 #below is creating the above folder
 os.makedirs(dataset_path_frames_dir,exist_ok = True)
 
-# classes = ["American Football", "Animation", "Baseball", "Basketball",
-#   "Cooking and food recipes", "Golf", "Graffiti Art", "Hair Style",
-#   "Ice Hockey", "Judo", "Soccer", "Speeches and Lectures-Talks",
-#   "Swimming(in Pool)", "Tennis", "Underwater-Ocean life",
-#   "Volleyball"]
+classes = ["American Football", "Animation", "Baseball", "Basketball",
+  "Cooking and food recipes", "Golf", "Graffiti Art", "Hair Style",
+  "Ice Hockey", "Judo", "Soccer", "Speeches and Lectures-Talks",
+  "Swimming(in Pool)", "Tennis", "Underwater-Ocean life",
+  "Volleyball"]
 
 #classes = ["Animation", "Cooking and food recipes"]
-classes = ["American Football"]
+#classes = ["American Football"]
 
 seq_size = 2040
 
