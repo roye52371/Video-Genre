@@ -157,7 +157,7 @@ for jenre in t_train_classes:
 #test part
 filename = 'Dataset70_30' # OR "Dataset70_30"( to run second time with 'Dataset80_20')
 dataset_path =filename +"/test"      # os.path.join(filename, 'train')
-dataset_path_frames_dir = filename+"/test_frames_120perIntervalOfVideo"
+dataset_path_frames_dir = filename+"/test_frames_120perIntervalsOfVideo"
 
 
 os.makedirs(dataset_path_frames_dir,exist_ok = True)
