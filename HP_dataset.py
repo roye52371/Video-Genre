@@ -26,14 +26,31 @@ class HP_dataset(Dataset):
     def __init__(self, videos_path, classes_path,seq_size, resize_image=(180,220)):
         #self.train_videos_paths_txt = glob.glob(os.path.join(train_videos_path, '*', '*.txt'))
         self.videos_paths = glob.glob(os.path.join(videos_path, '*','*','*.mp4'))# keep all frame video folder intervals paths
-        #print(self.videos_paths)
-        #self.train_videos_paths_txt = self.train_videos_paths_txt[0:8] # delete this line
-        #print(len(self.train_videos_paths_txt))
-        #the line above is only for checking small number of data to check faster a full run
-        #self.hand_points = hand_points
-        #print(videos_path)
-        #self.videos_path = videos_path
-        #print(self.videos_path)
+
+        #start commet: what to do when wanting to NOT take Jenres from our DATASETS
+        # allvideosnotsureneeded = glob.glob(os.path.join(videos_path, '*','*','*.mp4'))# keep all frame video folder intervals paths
+        # self.videos_paths=[]
+        # print(len(allvideosnotsureneeded))
+        # for vid in allvideosnotsureneeded:
+        #     path = os.path.normpath(vid)
+        #     b = path.split(os.sep)
+        #     jenre= b[len(b)-3]
+        #     if(jenre != "American Football"):
+        #         #chosee jenres to take out
+        #         #in if statement enter only if it is not one of the jenres you want out
+        #         #afterwards, go to evert classes.txt files in your different datatsets
+        #         #and delete it(Dataset, Dataset70_30,Dataset80_20)
+        #         #than update in server, this(HP_dataset.py) file
+        #         #and classes.txt files in all needed places in server code
+        #         self.videos_paths.append(vid)
+        # print(len(self.videos_paths))
+        # print(self.videos_paths)
+        # print(len(allvideosnotsureneeded))
+
+        # end start commet: what to do when wanting to NOT take Jenres from our DATASETS
+
+
+
         self.seq_size = seq_size #should be according to frames created per video in offline proccesing
         self.resize_image= resize_image
         random.shuffle(self.videos_paths)

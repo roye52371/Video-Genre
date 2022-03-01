@@ -75,8 +75,10 @@ if __name__ == '__main__':
     loss = nn.NLLLoss()
 
     # epochs and training
+    old_acc = 0
     best_accuracy = 0
     epoch_num_of_best_acc = 0
+    model_name_best_path= ""
     our_accuracy=0#current accuracy!!! may not the best one
     epochs = 35
     tepoch= trange(epochs,desc='epoches Progress Bar', unit="epoch",position=0)
@@ -126,34 +128,50 @@ if __name__ == '__main__':
             ####### Test model over valdiation test / test set
             #print("loss current training epoch\n")
             #print(loss_out)
-            accurcy = 0
-            with torch.no_grad():
-                net.eval()
-                #test_data_counter = 0
-                #print("start test\n")
-                with tqdm(test_loader, unit="batch",leave=False,position=2) as test_epoch:
-                    test_epoch.set_description(f"Test_Epoch {ep+1}")#cause ep start from o and end in epoches-1
-                    for hp_data, label in test_epoch:
-                        #test_data_counter=test_data_counter+1
-                        #print(test_data_counter)
-                        hp_data = hp_data.to(device)
-                        label = label.to(device)
-                        output = net(hp_data)
-                        if torch.argmax(output) == label:
-                            accurcy = accurcy + 1
+            if((ep+1) % 5 ==0): #because 0<=0<=34, so we want last epoch to be count
+                accurcy = 0
+                with torch.no_grad():
+                    net.eval()
+                    #test_data_counter = 0
+                    #print("start test\n")
+                    with tqdm(test_loader, unit="batch",leave=False,position=2) as test_epoch:
+                        test_epoch.set_description(f"Test_Epoch {ep+1}")#cause ep start from o and end in epoches-1
+                        for hp_data, label in test_epoch:
+                            #test_data_counter=test_data_counter+1
+                            #print(test_data_counter)
+                            hp_data = hp_data.to(device)
+                            label = label.to(device)
+                            output = net(hp_data)
+                            if torch.argmax(output) == label:
+                                accurcy = accurcy + 1
 
-                #print(f"accuracy={((accurcy / len(test_loader))*100)}")
-                our_accuracy = ((accurcy / len(test_loader)) * 100)
-                if(our_accuracy>best_accuracy):
-                    best_accuracy=our_accuracy
-                    epoch_num_of_best_acc = ep+1 #cause ep start from o and end in epoches-1
-                #add loss and accuracy to progress bar
-                tepoch.set_postfix(curr_accuracy=((accurcy / len(test_loader)) * 100),curr_loss=loss_out.item(),theBest_acc=best_accuracy,theEpochNumof_best_acc=epoch_num_of_best_acc)
-                tepoch.update(1)
-                net.train() #its only tells the model we are now training, so he knows to act differently where it needs
-    our_accuracy = ((accurcy / len(test_loader))*100)
-    filename = model_type+"_"+filename +"_isBi:_"+str(isBi)+"_accuracy="+str(our_accuracy)
-    torch.save(net.state_dict(), f'{filename}.pth')
-    print("model saved, TODO: add currect calculation for result\n")
+                    #print(f"accuracy={((accurcy / len(test_loader))*100)}")
+                    our_accuracy = ((accurcy / len(test_loader)) * 100)
+                    if(model_name_best_path == ""):
+                        old_acc= 0
+                    if(our_accuracy>best_accuracy):
+                        if (old_acc != 0): #because first one with 0 acc , did not saved
+                            curr_model_path = model_name_best_path+".pth"
+                            os.remove(curr_model_path)#delete old path
+                        best_accuracy=our_accuracy
+                        epoch_num_of_best_acc = ep+1 #cause ep start from o and end in epoches-1
+                        old_acc = our_accuracy
+                        model_name_best_path = model_type + "_" + filename + "_isBi:_" + str(
+                            isBi) + "_accuracy=" + str(best_accuracy)
+                        torch.save(net.state_dict(), f'{model_name_best_path}.pth')#keep new path of best model
+
+                    #add loss and accuracy to progress bar
+                    tepoch.set_postfix(curr_accuracy=((accurcy / len(test_loader)) * 100),curr_loss=loss_out.item(),theBest_acc=best_accuracy,theEpochNumof_best_acc=epoch_num_of_best_acc)
+                    tepoch.update(1)
+                    net.train() #its only tells the model we are now training, so he knows to act differently where it needs
+    #our_accuracy = ((accurcy / len(test_loader))*100)
+    #filename = model_type+"_"+filename +"_isBi:_"+str(isBi)+"_accuracy="+str(our_accuracy)
+    #torch.save(net.state_dict(), f'{filename}.pth')
+    if(best_accuracy == 0):
+        print("\n\nproblem with model , best accuracy is 0\n")
+    else:
+        print("\n\nour best accuracy is: ")
+        print(best_accuracy)
+        print("best model saved, TODO: add currect calculation confusion matrix and etc., for result\n")
     #calc_acc(filename, isBi) #need  to fix inside the function, check borak if need, or there islibrary func to it
     #calc_confusion_matrix(filename, isBi) #need  to fix inside the function, check borak if need, or there islibrary func to it
