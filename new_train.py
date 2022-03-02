@@ -164,6 +164,8 @@ if __name__ == '__main__':
                     tepoch.set_postfix(curr_accuracy=((accurcy / len(test_loader)) * 100),curr_loss=loss_out.item(),theBest_acc=best_accuracy,theEpochNumof_best_acc=epoch_num_of_best_acc)
                     tepoch.update(1)
                     net.train() #its only tells the model we are now training, so he knows to act differently where it needs
+            else:
+                tepoch.update(1)
     #our_accuracy = ((accurcy / len(test_loader))*100)
     #filename = model_type+"_"+filename +"_isBi:_"+str(isBi)+"_accuracy="+str(our_accuracy)
     #torch.save(net.state_dict(), f'{filename}.pth')
