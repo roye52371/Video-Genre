@@ -26,6 +26,7 @@ class HP_dataset(Dataset):
     def __init__(self, videos_path, classes_path,seq_size, resize_image=(180,220)):
         #self.train_videos_paths_txt = glob.glob(os.path.join(train_videos_path, '*', '*.txt'))
         self.videos_paths = glob.glob(os.path.join(videos_path, '*','*','*.mp4'))# keep all frame video folder intervals paths
+        #self.videos_paths = self.videos_paths[0:8] # delete this line
 
         #start commet: what to do when wanting to NOT take Jenres from our DATASETS
         # allvideosnotsureneeded = glob.glob(os.path.join(videos_path, '*','*','*.mp4'))# keep all frame video folder intervals paths

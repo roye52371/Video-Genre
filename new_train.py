@@ -10,7 +10,7 @@ import torch.optim as optim
 import torch.nn as nn
 import os
 from Accuracy import calc_acc
-from confusion_matrix import calc_confusion_matrix
+from create_confusion_matrix import calc_confusion_matrix
 #from EL.split_train_test import split
 from colorama import init
 from colorama import Fore, Back, Style
@@ -175,5 +175,9 @@ if __name__ == '__main__':
         print("\n\nour best accuracy is: ")
         print(best_accuracy)
         print("best model saved, TODO: add currect calculation confusion matrix and etc., for result\n")
+
+    print("\ncalc confusion matrix for model\n")
+    calc_confusion_matrix(model_name_best_path, isBi=True)
+    print("\nfinished all the code\n")
     #calc_acc(filename, isBi) #need  to fix inside the function, check borak if need, or there islibrary func to it
     #calc_confusion_matrix(filename, isBi) #need  to fix inside the function, check borak if need, or there islibrary func to it
