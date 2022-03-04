@@ -45,8 +45,8 @@ def plot_m(lbl_lst, pred_lst, classnames, filename):
     plt.xlabel('Predicted')
     plt.ylabel('True')
     plt.savefig(f'{filename}_martix.jpeg',bbox_inches= 'tight')
-    """
-    plt.show()
+
+    #plt.show()
 
     # calculating the: precision recall f1-score support
     prec_rcall = classification_report(lbl_lst, pred_lst, target_names=classnames)
@@ -57,7 +57,7 @@ def plot_m(lbl_lst, pred_lst, classnames, filename):
         if "accuracy" in l:
             print(Fore.GREEN, l)
             break
-    """
+
 
 def calc_confusion_matrix(filename, isBi):
     #############

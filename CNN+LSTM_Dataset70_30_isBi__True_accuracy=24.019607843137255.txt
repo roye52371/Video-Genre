@@ -1,0 +1,22 @@
+                             precision    recall  f1-score   support
+
+          American Football       0.68      0.17      0.27       102
+                  Animation       0.00      0.00      0.00       102
+                   Baseball       0.27      0.79      0.40       102
+                 Basketball       0.16      0.05      0.07       102
+   Cooking and food recipes       0.16      0.21      0.18       102
+                       Golf       0.21      0.30      0.25       102
+               Graffiti Art       0.10      0.07      0.08       102
+                 Hair Style       0.16      0.34      0.22       102
+                 Ice Hockey       0.00      0.00      0.00       102
+                       Judo       0.00      0.00      0.00       102
+                     Soccer       0.00      0.00      0.00       102
+Speeches and Lectures-Talks       0.28      0.51      0.36       102
+          Swimming(in Pool)       0.00      0.00      0.00       102
+                     Tennis       0.00      0.00      0.00       102
+      Underwater-Ocean life       0.57      0.94      0.71       102
+                 Volleyball       0.13      0.46      0.20       102
+
+                   accuracy                           0.24      1632
+                  macro avg       0.17      0.24      0.17      1632
+               weighted avg       0.17      0.24      0.17      1632
