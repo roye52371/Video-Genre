@@ -219,7 +219,7 @@ class LSTMmodel(nn.Module):
 #
 if __name__ == '__main__':
     # Instantiate the model w/ hyperparams
-    output_size = 16  # classification output in our case 16
+    output_size = 9  # classification output in our case 16
     hidden_dim = 256  # no of
     latent_dim = 512
     n_layers = 1

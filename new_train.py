@@ -38,7 +38,7 @@ train_path_videos = os.path.join(filename, 'train_frames_120perIntervalsOfVideo'
 train_dataset = HP_dataset(train_path_videos, os.path.join(filename, 'classes.txt'),seq, (180,220) )# (180,220) is frame size for all frames
 
 
-train_batch_size = 8 # if not work decrease to 4
+train_batch_size = 16 # if not work decrease to 4
 #train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=0)
 train_loader = DataLoader(train_dataset, batch_size=train_batch_size, shuffle=True, num_workers=0)
 
@@ -56,7 +56,8 @@ if __name__ == '__main__':
     #isBi = True # need to run one with tru and one with false
     isBi = True
     ####### LSTM Params #########
-    output_size = 16
+    #output_size = 16
+    output_size = 9 #delete problematic jenres which did not recognized by the model or confused to many other jenres
     # input of lstm
     #latent_dim = hand_points
     latent_dim = 512# roye and dekel latent dim according to borak
