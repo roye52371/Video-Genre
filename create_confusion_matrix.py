@@ -68,7 +68,7 @@ def calc_confusion_matrix(filename, isBi):
     ####### LSTM Params #########
     isBi = True
     ####### LSTM Params #########
-    output_size = 16
+    output_size = 9
     # input of lstm
     # latent_dim = hand_points
     latent_dim = 512  # roye and dekel latent dim according to borak
