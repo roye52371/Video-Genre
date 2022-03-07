@@ -134,4 +134,4 @@ def calc_confusion_matrix(filename, isBi):
 
 
 if __name__ == '__main__':
-    calc_confusion_matrix(filename='CNN+LSTM_Dataset70_30_isBi:_True_accuracy=24.019607843137255', isBi=True)
+    calc_confusion_matrix(filename='CNN+LSTM_Dataset70_30_isBi:_True_accuracy=42.37472766884531', isBi=True)
