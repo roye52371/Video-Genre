@@ -119,25 +119,53 @@ def calc_confusion_matrix(filename, isBi):
     lbl_lst = []
     pred_lst = []
     y_score = []
-    for hp_data, label in test_loader:
-        hp_data = hp_data.to(device)
-        label = label.to(device)
-        output = net(hp_data).cpu().detach().numpy()
-        # print("output=", np.argmax(output))
-        lbl_lst.append(inv_map[label.cpu().detach().numpy()[0]])
-        pred_lst.append(inv_map[np.argmax(output)])
-        ####
-        y_score.append(output)
+    y_true =[]
+    with tqdm(test_loader, unit="batch", leave=False, position=2) as test_epoch:
+        test_epoch.set_description(f"Test for confusion matrix")  # cause ep start from o and end in epoches-1
+        for hp_data, label in test_epoch:
+            hp_data = hp_data.to(device)
+            label = label.to(device)
+            #print(hp_data.size())
+            cleanoutput= net(hp_data)
+            output = cleanoutput.cpu().detach().numpy()
+            #print(output[0])
+            #print(inv_map[np.argmax(output[0])])
+            #print(cleanoutput[0].cpu().detach().numpy())
+
+            lbl_lst.append(inv_map[label.cpu().detach().numpy()[0]])
+            pred_lst.append(inv_map[np.argmax(output)])
+            ####
+            y_true.append(label.cpu().detach().numpy()[0])
+            our_scorearr= cleanoutput[0].cpu().detach().numpy()
+            y_score.append(our_scorearr.tolist()) #cause output in array of score inside array when the array is in [0]0[0]
+            #print(y_true)
+            #print(y_score)
 
     #####
-    y_true = lbl_lst
+    np.array(y_true)
+    np.array(y_score) # to make it np array
+    # print("y_score:\n")
+    # print(y_score)
+    # print("y_true:\n")
+    # print(y_true)
+    #print(len(y_true))
+    #print(len(y_score))
     t1 = top_k_accuracy_score(y_true, y_score, k=1)
+    # print("t1:\n")
+    # print(t1)
     t3 = top_k_accuracy_score(y_true, y_score, k=3)
+    # print("t3:\n")
+    # print(t3)
     t5 = top_k_accuracy_score(y_true, y_score, k=5)
-    f = open("CNN+LSTM_Dataset70_30.txt", "w")
-    f.write("Top1 accuracy score: " + t1 + "\n")
-    f.write("Top3 accuracy score: " + t3 + "\n")
-    f.write("Top5 accuracy score: " + t5 + "\n")
+    # print("t5:\n")
+    # print(t5)
+    topk_model_name = "TopK accuracy_of Model: "+filename
+    f = open("TopK_Accuracy_Table.txt", "a") #so we can append to the same file accuracy of different models
+    f.write(topk_model_name+"\n\n")
+    f.write("Top1 accuracy score: " + str(t1) + "\n")
+    f.write("Top3 accuracy score: " + str(t3) + "\n")
+    f.write("Top5 accuracy score: " + str(t5) + "\n")
+    f.write("\n\n")
     f.close()
     ####
     classnames = list(class_num.keys())

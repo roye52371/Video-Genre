@@ -1,0 +1,7 @@
+TopK accuracy_of Model: CNN+LSTM_Dataset70_30_isBi:_True_accuracy=42.37472766884531.txt
+
+Top1 accuracy score: 0.42374727668845313
+Top3 accuracy score: 0.6688453159041394
+Top5 accuracy score: 0.8017429193899782
+
+
