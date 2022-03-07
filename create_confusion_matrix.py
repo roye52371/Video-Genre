@@ -17,7 +17,7 @@ from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
 from colorama import init
 from colorama import Fore, Back, Style
-
+from sklearn.metrics import top_k_accuracy_score
 init()
 
 
@@ -118,17 +118,28 @@ def calc_confusion_matrix(filename, isBi):
     loss_out = 0
     lbl_lst = []
     pred_lst = []
-    with tqdm(test_loader, unit="batch", leave=False, position=2) as test_epoch:
-        test_epoch.set_description(f"Test for confusion matrix")  # cause ep start from o and end in epoches-1
-        for hp_data, label in test_epoch:
-            hp_data = hp_data.to(device)
-            label = label.to(device)
-            #print(hp_data.size())
-            output = net(hp_data).cpu().detach().numpy()
-            # print("output=", np.argmax(output))
-            lbl_lst.append(inv_map[label.cpu().detach().numpy()[0]])
-            pred_lst.append(inv_map[np.argmax(output)])
+    y_score = []
+    for hp_data, label in test_loader:
+        hp_data = hp_data.to(device)
+        label = label.to(device)
+        output = net(hp_data).cpu().detach().numpy()
+        # print("output=", np.argmax(output))
+        lbl_lst.append(inv_map[label.cpu().detach().numpy()[0]])
+        pred_lst.append(inv_map[np.argmax(output)])
+        ####
+        y_score.append(output)
 
+    #####
+    y_true = lbl_lst
+    t1 = top_k_accuracy_score(y_true, y_score, k=1)
+    t3 = top_k_accuracy_score(y_true, y_score, k=3)
+    t5 = top_k_accuracy_score(y_true, y_score, k=5)
+    f = open("CNN+LSTM_Dataset70_30.txt", "w")
+    f.write("Top1 accuracy score: " + t1 + "\n")
+    f.write("Top3 accuracy score: " + t3 + "\n")
+    f.write("Top5 accuracy score: " + t5 + "\n")
+    f.close()
+    ####
     classnames = list(class_num.keys())
     plot_m(lbl_lst, pred_lst, classnames, filename)
 
