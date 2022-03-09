@@ -5,3 +5,10 @@ Top3 accuracy score: 0.6688453159041394
 Top5 accuracy score: 0.8017429193899782
 
 
+TopK accuracy_of Model: NumOfJenre: 5_model: CNN+LSTM_Dataset70_30_isBi:_True_accuracy=50.78431372549019
+
+Top1 accuracy score: 0.5078431372549019
+Top3 accuracy score: 0.7568627450980392
+Top5 accuracy score: 1.0
+
+
