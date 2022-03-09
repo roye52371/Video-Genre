@@ -86,7 +86,7 @@ if __name__ == '__main__':
     model_name_best_path= ""
     our_accuracy=0#current accuracy!!! may not the best one
     epochs = 35
-    num_of_jenre_name = "NumOfJenre: "+str(output_size)+"_model: "
+    num_of_jenre_name = "NumOfJenre_"+str(output_size)+"_model_"
     tepoch= trange(epochs,desc='epoches Progress Bar', unit="epoch",position=0)
     for ep in range(epochs):
         with tqdm(train_loader, unit="batch",position=1,leave=False) as train_epoch:
@@ -162,7 +162,7 @@ if __name__ == '__main__':
                         best_accuracy=our_accuracy
                         epoch_num_of_best_acc = ep+1 #cause ep start from o and end in epoches-1
                         old_acc = our_accuracy
-                        model_name_best_path = num_of_jenre_name+model_type + "_" + filename + "_isBi:_" + str(
+                        model_name_best_path = num_of_jenre_name+model_type + "_" + filename + "_isBi_" + str(
                             isBi) + "_accuracy=" + str(best_accuracy)
                         torch.save(net.state_dict(), f'{model_name_best_path}.pth')#keep new path of best model
 
