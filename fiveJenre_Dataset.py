@@ -40,13 +40,13 @@ class fiveJenre_Dataset(Dataset):
             if((jenre != "Animation") & (jenre != "Ice Hockey") & (jenre != "Judo") & (jenre != "Soccer")
                     & (jenre != "Swimming(in Pool)") & (jenre != "Tennis") & (jenre != "Volleyball")
                     & (jenre != "American Football") & (jenre != "Golf") & (jenre != "Graffiti Art")
-                    & (jenre != "Hair Style")):
+                    & (jenre != "Speeches and Lectures-Talks")): #& (jenre != "Hair Style")
                 #chosee jenres to take out
                 #in if statement enter only if it is not one of the jenres you want out
-                #afterwards, go to evert fivejenre_classes.txt files in your different datatsets
+                #afterwards, go to evert fivejenre_classes_with_HairStyle.txt files in your different datatsets
                 #and delete it(Dataset, Dataset70_30,Dataset80_20)
                 #than update in server, this(HP_dataset.py) file
-                #and fivejenre_classes.txt files in all needed places in server code
+                #and fivejenre_classes_with_HairStyle.txt files in all needed places in server code
                 self.videos_paths.append(vid)
         print("size dataset after changes:\n")
         print(len(self.videos_paths))
@@ -192,7 +192,7 @@ class fiveJenre_Dataset(Dataset):
 #         # Closing file
 #         f.close()
 #     print(class_dict)
-#     with open(os.path.join('EL', 'fivejenre_classes.txt'), "w") as write_file:
+#     with open(os.path.join('EL', 'fivejenre_classes_with_HairStyle.txt'), "w") as write_file:
 #         json.dump(class_dict, write_file)
 
 # if __name__ == '__main__':
@@ -206,7 +206,7 @@ class fiveJenre_Dataset(Dataset):
 #
 #      seq = 120  # num of frames to take from one video
 #      train_path = os.path.join(filename, 'train_frames_120perIntervalsOfVideo')
-#      train_dataset = HP_dataset(train_path, os.path.join(filename, 'fivejenre_classes.txt'), seq,
+#      train_dataset = HP_dataset(train_path, os.path.join(filename, 'fivejenre_classes_with_HairStyle.txt'), seq,
 #                                 (180, 220))  # (180,220) is frame size for all frames
 #
 #      #batch_size = 1
@@ -235,6 +235,6 @@ class fiveJenre_Dataset(Dataset):
 # #     #################################
 # #
 # #     train_path = os.path.join('EL/train')
-# #     train_dataset = DataLoader(train_path,'EL/fivejenre_classes.txt')
+# #     train_dataset = DataLoader(train_path,'EL/fivejenre_classes_with_HairStyle.txt')
 # #     for i in train_dataset:
 # #      print(i[0].size(),i[1])

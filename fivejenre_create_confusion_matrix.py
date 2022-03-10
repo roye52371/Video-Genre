@@ -100,9 +100,9 @@ def calc_confusion_matrix(filename, isBi):
     # seq should be according to frames created per video in offline proccesing in convertedVideosToFrames.ipynb
     seq = 120  # num of frames to take from one video
 
-    classes_path = os.path.join(dataset_name, 'fivejenre_classes.txt')
+    classes_path = os.path.join(dataset_name, 'fivejenre_classes_with_HairStyle.txt')
     test_path_videos = os.path.join(dataset_name, 'test_frames_120perIntervalsOfVideo')
-    test_dataset = fiveJenre_Dataset(test_path_videos, os.path.join(dataset_name, 'fivejenre_classes.txt'), seq, (180, 220))
+    test_dataset = fiveJenre_Dataset(test_path_videos, os.path.join(dataset_name, 'fivejenre_classes_with_HairStyle.txt'), seq, (180, 220))
     test_loader = DataLoader(test_dataset, batch_size=1, shuffle=True, num_workers=0)
 
     ##############3

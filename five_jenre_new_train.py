@@ -35,11 +35,11 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 seq=120#num of frames to take from one video
 # train_path_videos = filename+"/train"
 # train_path_txt = os.path.join(filename, 'train_frames_120perIntervalsOfVideo')
-# train_dataset = HP_dataset(train_path_txt, os.path.join(filename, 'fivejenre_classes.txt'),seq, train_path_videos,(180,220) )# (180,220) is frame size for all frames
+# train_dataset = HP_dataset(train_path_txt, os.path.join(filename, 'fivejenre_classes_with_HairStyle.txt'),seq, train_path_videos,(180,220) )# (180,220) is frame size for all frames
 
 #train_path_videos = filename+"/train"
 train_path_videos = os.path.join(filename, 'train_frames_120perIntervalsOfVideo')
-train_dataset = fiveJenre_Dataset(train_path_videos, os.path.join(filename, 'fivejenre_classes.txt'),seq, (180,220) )# (180,220) is frame size for all frames
+train_dataset = fiveJenre_Dataset(train_path_videos, os.path.join(filename, 'fivejenre_classes_with_HairStyle.txt'),seq, (180,220) )# (180,220) is frame size for all frames
 
 
 train_batch_size = 8 # if not work decrease to 4
@@ -48,11 +48,11 @@ train_loader = DataLoader(train_dataset, batch_size=train_batch_size, shuffle=Tr
 
 # test_path_videos = filename+"/test"
 # test_path_txt = os.path.join(filename, 'test_frames_120perIntervalsOfVideo')
-# test_dataset = HP_dataset(test_path_txt, os.path.join(filename, 'fivejenre_classes.txt'), seq, test_path_videos,(180,220))
+# test_dataset = HP_dataset(test_path_txt, os.path.join(filename, 'fivejenre_classes_with_HairStyle.txt'), seq, test_path_videos,(180,220))
 
 
 test_path_videos = os.path.join(filename, 'test_frames_120perIntervalsOfVideo')
-test_dataset = fiveJenre_Dataset(test_path_videos, os.path.join(filename, 'fivejenre_classes.txt'), seq, (180,220))
+test_dataset = fiveJenre_Dataset(test_path_videos, os.path.join(filename, 'fivejenre_classes_with_HairStyle.txt'), seq, (180,220))
 test_loader = DataLoader(test_dataset, batch_size=1, shuffle=True, num_workers=0)
 
 if __name__ == '__main__':
