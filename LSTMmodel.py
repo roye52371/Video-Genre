@@ -12,6 +12,8 @@ import os
 import copy
 #from torchviz import make_dot
 import torch.nn.functional as F
+from torchsummary import summary
+
 
 print("PyTorch Version: ", torch.__version__)
 print("Torchvision Version: ", torchvision.__version__)
@@ -219,17 +221,19 @@ class LSTMmodel(nn.Module):
 #
 # if __name__ == '__main__':
 #     # Instantiate the model w/ hyperparams
+#
 #     output_size = 5  # classification output in our case 16
 #     hidden_dim = 256  # no of
 #     latent_dim = 512
 #     n_layers = 1
 #     batch_size = 1
-#     seq = 30
-#
+#     seq = 120
+#     #bsmodel = MyBasicModel()
 #     net = LSTMmodel(output_size, latent_dim, hidden_dim, n_layers, model_name='Basic', isBi=True)
-#     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-#     net = net.to(device)
+#     #device = 'cuda' if torch.cuda.is_available() else 'cpu'
+#     #net = net.to(device)
 #     x = torch.rand(batch_size, seq, 3, 180, 220)# 3 is rgb, (180,220) specific frame size
+#     #summary(net,(seq, 3, 180, 220))
 #
 #     #for tensor, lbl in datasets:
 #

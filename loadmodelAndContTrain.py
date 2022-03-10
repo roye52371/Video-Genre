@@ -51,7 +51,7 @@ seq=120#num of frames to take from one video
 
 #train_path_videos = filename+"/train"
 train_path_videos = os.path.join(filename, 'train_frames_120perIntervalsOfVideo')
-train_dataset = fiveJenre_Dataset(train_path_videos, os.path.join(filename, 'fivejenre_classes.txt'),seq, (180,220) )# (180,220) is frame size for all frames
+train_dataset = fiveJenre_Dataset(train_path_videos, os.path.join(filename, 'fivejenre_classes_with_HairStyle.txt'),seq, (180,220) )# (180,220) is frame size for all frames
 
 
 train_batch_size = 8 # if not work decrease to 4
@@ -64,7 +64,7 @@ train_loader = DataLoader(train_dataset, batch_size=train_batch_size, shuffle=Tr
 
 
 test_path_videos = os.path.join(filename, 'test_frames_120perIntervalsOfVideo')
-test_dataset = fiveJenre_Dataset(test_path_videos, os.path.join(filename, 'fivejenre_classes.txt'), seq, (180,220))
+test_dataset = fiveJenre_Dataset(test_path_videos, os.path.join(filename, 'fivejenre_classes_with_HairStyle.txt'), seq, (180,220))
 test_loader = DataLoader(test_dataset, batch_size=1, shuffle=True, num_workers=0)
 
 if __name__ == '__main__':
@@ -88,7 +88,7 @@ if __name__ == '__main__':
     net = net.to(device)
     #load current model
     _use_new_zipfile_serialization = False
-    net.load_state_dict(torch.load(f'{"NumOfJenre_5_model_CNN+LSTM_Dataset70_30_isBi:_True_accuracy=54.11764705882353"}.pth'))
+    net.load_state_dict(torch.load(f'{"NumOfJenre_5_model_CNN+LSTM_Dataset70_30_isBi_True_accuracy=53.92156862745098"}.pth'))
 
     # input: the parameters to be optimized
     optimizer = optim.Adam(net.parameters(), lr=0.001)
@@ -100,11 +100,11 @@ if __name__ == '__main__':
     epoch_num_of_best_acc = 0
     model_name_best_path= ""
     our_accuracy=0#current accuracy!!! may not the best one
-    epochs = 10
+    epochs = 5
 
     dataset_name = 'Dataset70_30'
     num_of_jenre_name = "NumOfJenre_"+str(output_size)+"_model_"
-    classes_path = os.path.join(dataset_name, 'fivejenre_classes.txt')
+    classes_path = os.path.join(dataset_name, 'fivejenre_classes_with_HairStyle.txt')
     with open(classes_path, "r") as read_file:
         class_num = json.load(read_file)
     inv_map = {v: k for k, v in class_num.items()}

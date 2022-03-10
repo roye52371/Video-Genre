@@ -142,7 +142,7 @@ class vid_dataset_with_path_name(Dataset):
         # label = self.class_num[os.path.dirname(video_path).split('/')[-1]]
         label = torch.tensor(label)
         label = label.long()
-
+        #print(type(str(video_path)))
         return tensor, label, video_path
 
     def __len__(self):  # return count of sample we have

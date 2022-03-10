@@ -84,7 +84,7 @@ if __name__ == '__main__':
         test_epoch.set_description(f"Test_Model")#cause ep start from o and end in epoches-1
         for hp_data, label,curr_video_path in test_epoch:
             #test_data_counter=test_data_counter+1
-            #print(test_data_counter)
+            #print(str(curr_video_path[0]))
             hp_data = hp_data.to(device)
             label = label.to(device)
             output = net(hp_data)
@@ -93,10 +93,10 @@ if __name__ == '__main__':
             else:
                 num_of_failed_sub_videos = num_of_failed_sub_videos+1
                 f = open("failed_toDetect_Videos.txt","a")  # so we can append to the same file accuracy of different models
-                f.write(curr_video_path + "\n")
+                f.write(str(curr_video_path) + "\n")
                 f.close()
 
 
     f = open("failed_toDetect_Videos.txt","a")  # so we can append to the same file accuracy of different models
-    f.write("num of videos failed to detected their currect jenre" + num_of_failed_sub_videos +"\n")
+    f.write("num of videos failed to detected their currect jenre" + str(num_of_failed_sub_videos) +"\n")
     f.close()
