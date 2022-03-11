@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 
 from torch.utils.data import DataLoader
-from HP_dataset import HP_dataset
+from Video_Dataset import nineJenre_Dataset, fiveJenre_Dataset, sixteenJenre_Dataset
 import torch
 #from HandLSTM import LSTMmodel
 from  LSTMmodel import LSTMmodel
@@ -17,47 +17,50 @@ from colorama import Fore, Back, Style
 from tqdm import tqdm
 from tqdm import trange
 
-filename = 'Dataset70_30' # OR "Dataset70_30"( to run second time with 'Dataset80_20')
-model_type = "CNN+LSTM"
 
-init()
+def train_Model(num_of_Jenres,classes_File):
+    filename = 'Dataset70_30' # OR "Dataset70_30"( to run second time with 'Dataset80_20')
+    model_type = "CNN+LSTM"
 
-print("cuda:0" if torch.cuda.is_available() else "cpu")
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    init()
 
-#hand_points = 42 * 3
+    print("cuda:0" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-#seq should be according to frames created per video in offline proccesing in convertedVideosToFrames.ipynb
-seq=120#num of frames to take from one video
-# train_path_videos = filename+"/train"
-# train_path_txt = os.path.join(filename, 'train_frames_120perIntervalsOfVideo')
-# train_dataset = HP_dataset(train_path_txt, os.path.join(filename, 'classes.txt'),seq, train_path_videos,(180,220) )# (180,220) is frame size for all frames
+    #hand_points = 42 * 3
 
-#train_path_videos = filename+"/train"
-train_path_videos = os.path.join(filename, 'train_frames_120perIntervalsOfVideo')
-train_dataset = HP_dataset(train_path_videos, os.path.join(filename, 'classes.txt'),seq, (180,220) )# (180,220) is frame size for all frames
+    #seq should be according to frames created per video in offline proccesing in convertedVideosToFrames.ipynb
+    seq=120#num of frames to take from one video
+    # train_path_videos = filename+"/train"
+    # train_path_txt = os.path.join(filename, 'train_frames_120perIntervalsOfVideo')
+    # train_dataset = HP_dataset(train_path_txt, os.path.join(filename, 'classes.txt'),seq, train_path_videos,(180,220) )# (180,220) is frame size for all frames
 
+    #train_path_videos = filename+"/train"
+    train_path_videos = os.path.join(filename, 'train_frames_120perIntervalsOfVideo')
+    train_batch_size = 16  # if not work decrease to 4 or 8
+    test_path_videos = os.path.join(filename, 'test_frames_120perIntervalsOfVideo')
+    if (num_of_Jenres == 5):
+        train_dataset = fiveJenre_Dataset(train_path_videos, os.path.join(filename, classes_File),seq, (180,220) )# (180,220) is frame size for all frames
+        train_loader = DataLoader(train_dataset, batch_size=train_batch_size, shuffle=True, num_workers=0)
+        test_dataset = fiveJenre_Dataset(test_path_videos, os.path.join(filename, classes_File), seq, (180,220))
+        test_loader = DataLoader(test_dataset, batch_size=1, shuffle=True, num_workers=0)
+    if (num_of_Jenres == 9):
+        train_dataset = nineJenre_Dataset(train_path_videos, os.path.join(filename, classes_File),seq, (180,220) )# (180,220) is frame size for all frames
+        train_loader = DataLoader(train_dataset, batch_size=train_batch_size, shuffle=True, num_workers=0)
+        test_dataset = nineJenre_Dataset(test_path_videos, os.path.join(filename, classes_File), seq, (180,220))
+        test_loader = DataLoader(test_dataset, batch_size=1, shuffle=True, num_workers=0)
+    if (num_of_Jenres == 16):
+        train_dataset = sixteenJenre_Dataset(train_path_videos, os.path.join(filename, classes_File),seq, (180,220) )# (180,220) is frame size for all frames
+        train_loader = DataLoader(train_dataset, batch_size=train_batch_size, shuffle=True, num_workers=0)
+        test_dataset = sixteenJenre_Dataset(test_path_videos, os.path.join(filename, classes_File), seq, (180,220))
+        test_loader = DataLoader(test_dataset, batch_size=1, shuffle=True, num_workers=0)
 
-train_batch_size = 16 # if not work decrease to 4
-#train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=0)
-train_loader = DataLoader(train_dataset, batch_size=train_batch_size, shuffle=True, num_workers=0)
-
-# test_path_videos = filename+"/test"
-# test_path_txt = os.path.join(filename, 'test_frames_120perIntervalsOfVideo')
-# test_dataset = HP_dataset(test_path_txt, os.path.join(filename, 'classes.txt'), seq, test_path_videos,(180,220))
-
-
-test_path_videos = os.path.join(filename, 'test_frames_120perIntervalsOfVideo')
-test_dataset = HP_dataset(test_path_videos, os.path.join(filename, 'classes.txt'), seq, (180,220))
-test_loader = DataLoader(test_dataset, batch_size=1, shuffle=True, num_workers=0)
-
-if __name__ == '__main__':
 
     #isBi = True # need to run one with tru and one with false
     isBi = True
     ####### LSTM Params #########
     #output_size = 16
-    output_size = 9 #delete problematic jenres which did not recognized by the model or confused to many other jenres
+    output_size = num_of_Jenres #delete problematic jenres which did not recognized by the model or confused to many other jenres
     # input of lstm
     #latent_dim = hand_points
     latent_dim = 512# roye and dekel latent dim according to borak
@@ -82,6 +85,7 @@ if __name__ == '__main__':
     model_name_best_path= ""
     our_accuracy=0#current accuracy!!! may not the best one
     epochs = 35
+    num_of_jenre_name = "NumOfJenre_" + str(output_size) + "_model_"
     tepoch= trange(epochs,desc='epoches Progress Bar', unit="epoch",position=0)
     for ep in range(epochs):
         with tqdm(train_loader, unit="batch",position=1,leave=False) as train_epoch:
@@ -157,7 +161,7 @@ if __name__ == '__main__':
                         best_accuracy=our_accuracy
                         epoch_num_of_best_acc = ep+1 #cause ep start from o and end in epoches-1
                         old_acc = our_accuracy
-                        model_name_best_path = model_type + "_" + filename + "_isBi:_" + str(
+                        model_name_best_path = num_of_jenre_name+model_type + "_" + filename + "_isBi_" + str(
                             isBi) + "_accuracy=" + str(best_accuracy)
                         torch.save(net.state_dict(), f'{model_name_best_path}.pth')#keep new path of best model
 
@@ -178,7 +182,12 @@ if __name__ == '__main__':
         print("best model saved, TODO: add currect calculation confusion matrix and etc., for result\n")
 
     print("\ncalc confusion matrix for model\n")
-    calc_confusion_matrix(model_name_best_path, isBi=True)
+    calc_confusion_matrix(model_name_best_path, isBi=True,num_of_Jenres=num_of_Jenres,classes_File=classes_File)
     print("\nfinished all the code\n")
-    #calc_acc(filename, isBi) #need  to fix inside the function, check borak if need, or there islibrary func to it
-    #calc_confusion_matrix(filename, isBi) #need  to fix inside the function, check borak if need, or there islibrary func to it
+        #calc_acc(filename, isBi) #need  to fix inside the function, check borak if need, or there islibrary func to it
+        #calc_confusion_matrix(filename, isBi) #need  to fix inside the function, check borak if need, or there islibrary func to it
+
+if __name__ == '__main__':
+    train_Model( 5,'fivejenre_classes.txt')
+    #train_Model( 9, 'ninejenre_classes.txt')
+    #train_Model(16, 'sixteenjenre_classes.txt')

@@ -1,7 +1,8 @@
 from torch.utils.data import DataLoader
 from tqdm import tqdm
 
-from HP_dataset import HP_dataset
+#from HP_dataset import HP_dataset
+from Video_Dataset import sixteenJenre_Dataset,nineJenre_Dataset,fiveJenre_Dataset
 import torch
 #from HandLSTM import LSTMmodel
 from  LSTMmodel import LSTMmodel
@@ -59,7 +60,7 @@ def plot_m(lbl_lst, pred_lst, classnames, filename):
             break
 
 
-def calc_confusion_matrix(filename, isBi):
+def calc_confusion_matrix(filename, isBi,num_of_Jenres,classes_File):
     #############
     # Model
     #############
@@ -68,7 +69,7 @@ def calc_confusion_matrix(filename, isBi):
     ####### LSTM Params #########
     isBi = True
     ####### LSTM Params #########
-    output_size = 9
+    output_size = num_of_Jenres
     # input of lstm
     # latent_dim = hand_points
     latent_dim = 512  # roye and dekel latent dim according to borak
@@ -99,10 +100,20 @@ def calc_confusion_matrix(filename, isBi):
     # seq should be according to frames created per video in offline proccesing in convertedVideosToFrames.ipynb
     seq = 120  # num of frames to take from one video
 
-    classes_path = os.path.join(dataset_name, 'classes.txt')
+    classes_path = os.path.join(dataset_name, classes_File)
     test_path_videos = os.path.join(dataset_name, 'test_frames_120perIntervalsOfVideo')
-    test_dataset = HP_dataset(test_path_videos, os.path.join(dataset_name, 'classes.txt'), seq, (180, 220))
-    test_loader = DataLoader(test_dataset, batch_size=1, shuffle=True, num_workers=0)
+
+
+    if (num_of_Jenres == 5):
+        test_dataset = fiveJenre_Dataset(test_path_videos, os.path.join(filename, classes_File), seq, (180, 220))
+        test_loader = DataLoader(test_dataset, batch_size=1, shuffle=True, num_workers=0)
+    if (num_of_Jenres == 9):
+        test_dataset = nineJenre_Dataset(test_path_videos, os.path.join(filename, classes_File), seq, (180, 220))
+        test_loader = DataLoader(test_dataset, batch_size=1, shuffle=True, num_workers=0)
+    if (num_of_Jenres == 16):
+        test_dataset = sixteenJenre_Dataset(test_path_videos, os.path.join(filename, classes_File), seq, (180, 220))
+        test_loader = DataLoader(test_dataset, batch_size=1, shuffle=True, num_workers=0)
+
 
     ##############3
     # Classses
@@ -121,7 +132,7 @@ def calc_confusion_matrix(filename, isBi):
     y_score = []
     y_true =[]
     with tqdm(test_loader, unit="batch", leave=False, position=2) as test_epoch:
-        test_epoch.set_description(f"Test for confusion matrix")  # cause ep start from o and end in epoches-1
+        test_epoch.set_description(f"Test for confusion matrix with {num_of_Jenres} Jenres")  # cause ep start from o and end in epoches-1
         for hp_data, label in test_epoch:
             hp_data = hp_data.to(device)
             label = label.to(device)
@@ -173,4 +184,7 @@ def calc_confusion_matrix(filename, isBi):
 
 
 if __name__ == '__main__':
-    calc_confusion_matrix(filename='CNN+LSTM_Dataset70_30_isBi:_True_accuracy=42.37472766884531', isBi=True)
+    calc_confusion_matrix(filename='NumOfJenre_5_model_CNN+LSTM_Dataset70_30_isBi:_True_accuracy=54.90196078431373', isBi=True,num_of_Jenres=5,classes_File='fivejenre_classes.txt')
+    calc_confusion_matrix(filename='CNN+LSTM_Dataset70_30_isBi:_True_accuracy=42.37472766884531', isBi=True,num_of_Jenres=9,classes_File='ninejenre_classes.txt')
+    calc_confusion_matrix(filename='CNN+LSTM_Dataset70_30_isBi:_True_accuracy=24.019607843137255', isBi=True,num_of_Jenres=16,classes_File='sixteenjenre_classes.txt')
+

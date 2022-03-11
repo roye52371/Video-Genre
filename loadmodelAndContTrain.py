@@ -3,7 +3,7 @@ import numpy as np
 
 from torch.utils.data import DataLoader
 #from HP_dataset import HP_dataset
-from fiveJenre_Dataset import fiveJenre_Dataset
+from Video_Dataset import fiveJenre_Dataset
 
 import torch
 #from HandLSTM import LSTMmodel
@@ -51,7 +51,7 @@ seq=120#num of frames to take from one video
 
 #train_path_videos = filename+"/train"
 train_path_videos = os.path.join(filename, 'train_frames_120perIntervalsOfVideo')
-train_dataset = fiveJenre_Dataset(train_path_videos, os.path.join(filename, 'fivejenre_classes_with_HairStyle.txt'),seq, (180,220) )# (180,220) is frame size for all frames
+train_dataset = fiveJenre_Dataset(train_path_videos, os.path.join(filename, 'fivejenre_classes.txt'),seq, (180,220) )# (180,220) is frame size for all frames
 
 
 train_batch_size = 8 # if not work decrease to 4
@@ -64,7 +64,7 @@ train_loader = DataLoader(train_dataset, batch_size=train_batch_size, shuffle=Tr
 
 
 test_path_videos = os.path.join(filename, 'test_frames_120perIntervalsOfVideo')
-test_dataset = fiveJenre_Dataset(test_path_videos, os.path.join(filename, 'fivejenre_classes_with_HairStyle.txt'), seq, (180,220))
+test_dataset = fiveJenre_Dataset(test_path_videos, os.path.join(filename, 'fivejenre_classes.txt'), seq, (180,220))
 test_loader = DataLoader(test_dataset, batch_size=1, shuffle=True, num_workers=0)
 
 if __name__ == '__main__':
@@ -104,7 +104,7 @@ if __name__ == '__main__':
 
     dataset_name = 'Dataset70_30'
     num_of_jenre_name = "NumOfJenre_"+str(output_size)+"_model_"
-    classes_path = os.path.join(dataset_name, 'fivejenre_classes_with_HairStyle.txt')
+    classes_path = os.path.join(dataset_name, 'fivejenre_classes.txt')
     with open(classes_path, "r") as read_file:
         class_num = json.load(read_file)
     inv_map = {v: k for k, v in class_num.items()}
