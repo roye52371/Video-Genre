@@ -40,7 +40,7 @@ class fiveJenre_Dataset(Dataset):
             if((jenre != "Animation") & (jenre != "Ice Hockey") & (jenre != "Judo") & (jenre != "Soccer")
                     & (jenre != "Swimming(in Pool)") & (jenre != "Tennis") & (jenre != "Volleyball")
                     & (jenre != "American Football") & (jenre != "Golf") & (jenre != "Graffiti Art")
-                    & (jenre != "Speeches and Lectures-Talks")): #& (jenre != "Hair Style")
+                    & (jenre != "Hair Style")): #& (jenre != "Speeches and Lectures-Talks")
                 #chosee jenres to take out
                 #in if statement enter only if it is not one of the jenres you want out
                 #afterwards, go to evert fivejenre_classes_with_HairStyle.txt files in your different datatsets

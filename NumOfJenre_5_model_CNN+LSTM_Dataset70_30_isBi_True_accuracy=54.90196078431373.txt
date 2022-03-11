@@ -1,0 +1,11 @@
+                             precision    recall  f1-score   support
+
+                   Baseball       0.98      0.55      0.70       102
+                 Basketball       0.52      0.67      0.59       102
+   Cooking and food recipes       0.53      0.70      0.60       102
+Speeches and Lectures-Talks       0.00      0.00      0.00       102
+      Underwater-Ocean life       0.45      0.83      0.59       102
+
+                   accuracy                           0.55       510
+                  macro avg       0.50      0.55      0.50       510
+               weighted avg       0.50      0.55      0.50       510
