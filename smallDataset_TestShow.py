@@ -63,7 +63,7 @@ def TestSmallDataset(Model_name,numOfJenre,classes_file): #model is str, numOfJe
     net = net.to(device)
     _use_new_zipfile_serialization = False
     model_path = Model_name
-    net.load_state_dict(torch.load(f'{model_path}.pth'))
+    net.load_state_dict(torch.load(f'{model_path}.pth',map_location=torch.device(device)))
 
 
 

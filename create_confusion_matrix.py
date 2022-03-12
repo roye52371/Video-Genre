@@ -185,6 +185,6 @@ def calc_confusion_matrix(filename, isBi,num_of_Jenres,classes_File):
 
 if __name__ == '__main__':
     calc_confusion_matrix(filename='NumOfJenre_5_model_CNN+LSTM_Dataset70_30_isBi_True_accuracy=54.90196078431373', isBi=True,num_of_Jenres=5,classes_File='fivejenre_classes.txt')
-    #calc_confusion_matrix(filename='CNN+LSTM_Dataset70_30_isBi_True_accuracy=42.37472766884531', isBi=True,num_of_Jenres=9,classes_File='ninejenre_classes.txt')
-    #calc_confusion_matrix(filename='CNN+LSTM_Dataset70_30_isBi_True_accuracy=24.019607843137255', isBi=True,num_of_Jenres=16,classes_File='sixteenjenre_classes.txt')
+    calc_confusion_matrix(filename='CNN+LSTM_Dataset70_30_isBi_True_accuracy=42.37472766884531', isBi=True,num_of_Jenres=9,classes_File='ninejenre_classes.txt')
+    calc_confusion_matrix(filename='CNN+LSTM_Dataset70_30_isBi_True_accuracy=24.019607843137255', isBi=True,num_of_Jenres=16,classes_File='sixteenjenre_classes.txt')
 
