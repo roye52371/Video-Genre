@@ -103,6 +103,6 @@ def loadAndTestModel(Model_name,numOfJenre,classes_file): #model is str, numOfJe
 
 
 if __name__ == '__main__':
-    loadAndTestModel("NumOfJenre_5_model_CNN+LSTM_Dataset70_30_isBi:_True_accuracy=54.90196078431373",5,'fivejenre_classes.txt')
-    loadAndTestModel("CNN+LSTM_Dataset70_30_isBi:_True_accuracy=42.37472766884531", 9,'ninejenre_classes.txt')
-    loadAndTestModel("CNN+LSTM_Dataset70_30_isBi:_True_accuracy=24.019607843137255", 16,'sixteenjenre_classes.txt')
+    loadAndTestModel("NumOfJenre_5_model_CNN+LSTM_Dataset70_30_isBi_True_accuracy=54.90196078431373",5,'fivejenre_classes.txt')
+    loadAndTestModel("CNN+LSTM_Dataset70_30_isBi_True_accuracy=42.37472766884531", 9,'ninejenre_classes.txt')
+    loadAndTestModel("CNN+LSTM_Dataset70_30_isBi_True_accuracy=24.019607843137255", 16,'sixteenjenre_classes.txt')

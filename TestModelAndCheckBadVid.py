@@ -66,7 +66,7 @@ if __name__ == '__main__':
     #load model
     net = net.to(device)
     _use_new_zipfile_serialization = False
-    model_path = "CNN+LSTM_Dataset70_30_isBi:_True_accuracy=42.37472766884531"
+    model_path = "CNN+LSTM_Dataset70_30_isBi_True_accuracy=42.37472766884531"
     net.load_state_dict(torch.load(f'{model_path}.pth'))
 
 
