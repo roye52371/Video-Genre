@@ -516,8 +516,8 @@ class small_Dataset_for_show(Dataset):
         allvideosnotsureneeded = glob.glob(os.path.join(videos_path, '*', '*.mp4'))  # keep all frame video folder intervals paths
         self.videos_paths = []
         #print(num_of_jenre)
-        print("size dataset before changes:\n")
-        print(len(allvideosnotsureneeded))
+        #print("size dataset before changes:\n")
+        #print(len(allvideosnotsureneeded))
         for vid in allvideosnotsureneeded:
             path = os.path.normpath(vid)
             b = path.split(os.sep)
@@ -547,9 +547,9 @@ class small_Dataset_for_show(Dataset):
                     self.videos_paths.append(vid)
             if(num_of_jenre==16):
                 self.videos_paths.append(vid)
-        print("size dataset after changes:\n")
-        print(len(self.videos_paths))
-        # print(self.videos_paths)
+        #print("size dataset after changes:\n")
+        #print(len(self.videos_paths))
+        #print(self.videos_paths)
 
         # end start commet: what to do when wanting to NOT take Jenres from our DATASETS
 
@@ -560,8 +560,8 @@ class small_Dataset_for_show(Dataset):
         with open(classes_path, "r") as read_file:
             self.class_num = json.load(read_file)  # check if this is the way to read the classes numbers
 
-        print("jenre size:\n")
-        print(len(self.class_num))
+        #print("jenre size:\n")
+        #print(len(self.class_num))
         # this is the main method that we will use
         # getitem is used let's use with array calls
 
