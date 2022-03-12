@@ -12,7 +12,7 @@ from  LSTMmodel import LSTMmodel
 import torch.optim as optim
 import torch.nn as nn
 import os
-from Accuracy import calc_acc
+#from Accuracy import calc_acc
 from create_confusion_matrix import calc_confusion_matrix
 #from EL.split_train_test import split
 from colorama import init
